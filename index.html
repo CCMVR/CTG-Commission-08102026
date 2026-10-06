@@ -44,8 +44,8 @@
         .step {
             display: none;
             opacity: 0;
-            transform: translateY(14px);
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+            transform: translateY(12px);
+            transition: opacity 0.25s ease-out, transform 0.25s ease-out;
         }
 
         .step.active {
@@ -54,11 +54,13 @@
             transform: translateY(0);
         }
 
-        /* Disposition Radiale sur Grand Écran / Tablette */
+        /* =====================================================================
+           ROUE / CONSTELLATION VISUELLE (ADAPTÉE DESKTOP ET MOBILE SANS EMPILAGE)
+           ===================================================================== */
         .theme-circle-container {
             position: relative;
             width: 100%;
-            max-width: 540px;
+            max-width: 520px;
             aspect-ratio: 1 / 1;
             margin: 0 auto;
         }
@@ -66,8 +68,8 @@
         .theme-node {
             position: absolute;
             transform: translate(-50%, -50%);
-            width: 132px;
-            height: 132px;
+            width: 138px;
+            height: 138px;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -75,7 +77,7 @@
             justify-content: center;
             text-align: center;
             background: white;
-            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+            box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.14), 0 4px 10px -3px rgba(15, 23, 42, 0.06);
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             z-index: 10;
@@ -83,41 +85,70 @@
             user-select: none;
         }
 
-        .theme-node:hover {
+        .theme-node:hover:not(.completed) {
             transform: translate(-50%, -50%) scale(1.08);
-            box-shadow: 0 20px 25px -5px rgba(2, 132, 199, 0.22), 0 8px 10px -6px rgba(2, 132, 199, 0.1);
+            box-shadow: 0 18px 32px -5px rgba(2, 132, 199, 0.28);
+            border-color: #0284c7 !important;
         }
 
-        .theme-node:active {
-            transform: translate(-50%, -50%) scale(0.97);
+        .theme-node:active:not(.completed) {
+            transform: translate(-50%, -50%) scale(0.96);
         }
 
         .theme-node.completed {
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
             border-color: #22c55e !important;
             color: #15803d;
+            cursor: default;
         }
 
         .theme-node-center {
-            width: 158px;
-            height: 158px;
+            width: 156px;
+            height: 156px;
             background: linear-gradient(135deg, #0284c7 0%, #0f172a 100%);
             color: white;
-            font-weight: 700;
+            font-weight: 800;
             border: 5px solid #bae6fd;
             z-index: 20;
-            box-shadow: 0 12px 30px rgba(2, 132, 199, 0.4);
+            box-shadow: 0 14px 34px rgba(2, 132, 199, 0.42);
         }
 
-        .theme-node-center:hover {
+        .theme-node-center:hover:not(.completed) {
             background: linear-gradient(135deg, #0369a1 0%, #1e293b 100%);
-            border-color: #7dd3fc;
+            border-color: #7dd3fc !important;
         }
 
         .theme-node-center.completed {
             background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
             color: white;
             border-color: #bbf7d0 !important;
+        }
+
+        /* Adaptation parfaite de la roue sur écran de téléphone */
+        @media (max-width: 520px) {
+            .theme-circle-container {
+                max-width: 340px;
+            }
+            .theme-node {
+                width: 104px;
+                height: 104px;
+                padding: 6px;
+            }
+            .theme-node-center {
+                width: 116px !important;
+                height: 116px !important;
+            }
+            .node-icon {
+                font-size: 1.35rem !important;
+                margin-bottom: 2px !important;
+            }
+            .node-title {
+                font-size: 0.68rem !important;
+                line-height: 1.1 !important;
+            }
+            .node-sub {
+                font-size: 0.56rem !important;
+            }
         }
 
         .svg-lines {
@@ -130,7 +161,7 @@
             pointer-events: none;
         }
 
-        /* Nuage de mots dynamique et moderne */
+        /* Nuage de mots dynamique */
         .word-cloud-container {
             display: flex;
             flex-wrap: wrap;
@@ -138,14 +169,14 @@
             align-items: center;
             gap: 10px;
             padding: 1.25rem;
-            min-height: 220px;
+            min-height: 210px;
         }
 
         @media (max-width: 640px) {
             .word-cloud-container {
                 gap: 8px;
                 padding: 0.85rem;
-                min-height: 180px;
+                min-height: 175px;
             }
         }
 
@@ -194,7 +225,7 @@
             background-color: #f8fafc;
         }
 
-        /* Overlays Modals */
+        /* Modals */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -208,27 +239,6 @@
 
         .modal-overlay.active {
             display: flex;
-        }
-
-        /* Scrollbars */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 9999px;
-        }
-
-        @keyframes pulse-soft {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-        }
-        .animate-pulse-soft {
-            animation: pulse-soft 2.8s infinite ease-in-out;
         }
     </style>
 </head>
@@ -244,14 +254,13 @@
                     CTG
                 </div>
                 <div class="truncate">
-                    <div class="font-bold text-sm sm:text-base text-slate-900 leading-tight truncate">CCMVR • Commission Enfance-Jeunesse</div>
-                    <div class="text-[11px] font-medium text-slate-500 leading-tight truncate">Jeudi 8 octobre 2026 • Plan de Mandat & CTG</div>
+                    <div class="font-bold text-sm sm:text-base text-slate-900 leading-tight truncate">CCMVR • Commission 08/10</div>
+                    <div id="header-user-badge" class="text-[11px] font-medium text-slate-500 leading-tight truncate">Plan de Mandat & CTG</div>
                 </div>
             </button>
 
             <!-- Actions Rapides & Progression -->
-            <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-                <!-- Bouton QR Code rapide -->
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <button type="button" onclick="openQrModal()" title="Afficher le QR Code en plein écran"
                     class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1.5 transition-colors border border-slate-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -260,18 +269,14 @@
                     <span class="hidden sm:inline">QR Code</span>
                 </button>
 
-                <!-- Bouton Résultats en Direct (Grand Écran) -->
                 <button type="button" onclick="openLiveResults()" title="Voir la synthèse et les nuages en direct"
                     class="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-primary_dark font-bold text-xs flex items-center gap-1.5 transition-colors border border-sky-200">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                     <span>Direct</span>
-                    <span class="hidden md:inline">Synthèse</span>
                 </button>
 
-                <!-- Compteur d'axes -->
                 <button type="button" onclick="if(state.structureName) goToStep('step-themes')"
                     class="bg-slate-900 text-white px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
-                    <span class="hidden sm:inline text-slate-300 font-medium">Axes :</span>
                     <span id="completed-count" class="text-sky-300">0</span><span>/5</span>
                 </button>
             </div>
@@ -279,171 +284,106 @@
     </header>
 
     <!-- CONTENEUR PRINCIPAL -->
-    <main class="flex-grow flex items-center justify-center p-3 sm:p-6 mt-16 pb-20 w-full">
-        <div class="w-full max-w-4xl bg-white rounded-3xl shadow-xl border border-slate-200/70 overflow-hidden p-4 sm:p-8 md:p-10 relative">
+    <main class="flex-grow flex items-center justify-center p-3 sm:p-6 mt-16 pb-16 w-full">
+        <div class="w-full max-w-3xl bg-white rounded-3xl shadow-xl border border-slate-200/70 overflow-hidden p-5 sm:p-8 relative">
 
             <!-- ========================================================= -->
-            <!-- ÉTAPE 1 : ACCUEIL & QR CODE (GRAND ÉCRAN + MOBILE)        -->
+            <!-- ÉTAPE 1 : ACCUEIL ÉPURÉ & LOGOS 2X PLUS GRANDS            -->
             <!-- ========================================================= -->
             <div class="step active" id="step-accueil">
-                <!-- Logos Officiels -->
-                <div class="flex items-center justify-center gap-6 sm:gap-12 mb-6 sm:mb-8 bg-slate-50/80 py-4 px-6 rounded-2xl border border-slate-100">
-                    <img src="./logo-collectivite.png" alt="Logo CCMVR" class="h-16 sm:h-24 object-contain"
-                        onerror="this.src='https://placehold.co/300x120/f8fafc/0284c7?text=CCMVR'">
-                    <div class="h-12 sm:h-16 w-px bg-slate-300"></div>
-                    <img src="./logo-caf.png" alt="Logo CAF Haute-Loire" class="h-16 sm:h-24 object-contain"
-                        onerror="this.src='https://placehold.co/300x120/f8fafc/0d9488?text=CAF+Haute-Loire'">
-                </div>
+                <div class="text-center py-2 sm:py-4">
 
-                <!-- Titre & Introduction -->
-                <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-100 text-primary_dark font-bold text-xs uppercase tracking-wider mb-3">
-                        <span>🏛️ Commission Enfance • Jeunesse • Solidarités • Prévention</span>
+                    <!-- LOGOS 2 FOIS PLUS GROS -->
+                    <div class="flex items-center justify-center gap-8 sm:gap-16 mb-8 bg-slate-50/70 py-6 px-4 rounded-3xl border border-slate-100">
+                        <img src="./logo-collectivite.png" alt="Logo CCMVR" class="h-32 sm:h-48 object-contain"
+                            onerror="this.src='https://placehold.co/400x200/f8fafc/0284c7?text=CCMVR'">
+                        <div class="h-24 sm:h-36 w-px bg-slate-300"></div>
+                        <img src="./logo-caf.png" alt="Logo CAF Haute-Loire" class="h-32 sm:h-48 object-contain"
+                            onerror="this.src='https://placehold.co/400x200/f8fafc/0d9488?text=CAF+Haute-Loire'">
                     </div>
-                    <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 leading-tight">
-                        Construire la future <span class="text-primary">CTG 2027–2031</span> au cœur de notre <span class="underline decoration-amber-400 decoration-4 underline-offset-4">Plan de Mandat</span>
+
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-100 text-primary_dark font-bold text-xs uppercase tracking-wider mb-3">
+                        Commission Enfance • Jeunesse • Solidarités • 08/10/2026
+                    </div>
+
+                    <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-6">
+                        Plan de Mandat & Future <span class="text-primary">CTG 2027–2031</span>
                     </h1>
-                    <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
-                        Croisons le bilan de nos services aux familles avec les <strong>4 grandes orientations du mandat communautaire</strong> pour définir nos priorités politiques.
-                    </p>
-                </div>
 
-                <!-- Grille 2 colonnes : Action Mobile + QR Code Grand Écran -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                    <!-- Bloc central : Bouton d'action + QR Code côte à côte sans blabla -->
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center max-w-2xl mx-auto">
 
-                    <!-- Carte Action Élu (Mobile & Tablette en priorité) -->
-                    <div class="lg:col-span-7 bg-gradient-to-br from-slate-900 via-slate-800 to-sky-950 text-white rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-lg relative overflow-hidden">
-                        <div class="relative z-10">
-                            <span class="inline-block px-3 py-1 rounded-lg bg-sky-500/20 border border-sky-400/30 text-sky-300 text-xs font-bold uppercase tracking-wider mb-4">
-                                Espace Élus & Participants
-                            </span>
-                            <h2 class="text-xl sm:text-2xl font-bold mb-4 leading-snug">
-                                Participez en direct depuis votre téléphone ou ordinateur
-                            </h2>
-
-                            <ul class="space-y-3 text-xs sm:text-sm text-slate-200 mb-6">
-                                <li class="flex items-start gap-2.5">
-                                    <span class="w-5 h-5 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center text-xs shrink-0 mt-0.5">1</span>
-                                    <span>Explorez les <strong>4 axes du Plan de Mandat</strong> et le <strong>Cap CTG 2027-2031</strong>.</span>
-                                </li>
-                                <li class="flex items-start gap-2.5">
-                                    <span class="w-5 h-5 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center text-xs shrink-0 mt-0.5">2</span>
-                                    <span><strong>Votez jusqu'à 5 idées</strong> par nuage de mots ou <strong>ajoutez vos propres propositions</strong>.</span>
-                                </li>
-                                <li class="flex items-start gap-2.5">
-                                    <span class="w-5 h-5 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center text-xs shrink-0 mt-0.5">3</span>
-                                    <span>Visualisez le nuage s'enrichir en temps réel avec les votes de la commission.</span>
-                                </li>
-                            </ul>
+                        <!-- QR Code Grand Écran -->
+                        <div class="sm:col-span-5 bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl p-4 flex flex-col items-center">
+                            <div onclick="openQrModal()" title="Cliquer pour agrandir"
+                                class="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 cursor-pointer hover:scale-105 transition-transform">
+                                <div id="qrcode-home" class="w-36 h-36 sm:w-40 sm:h-40 flex items-center justify-center mx-auto"></div>
+                            </div>
+                            <button type="button" onclick="openQrModal()"
+                                class="mt-2.5 text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                                🔍 Agrandir le QR Code
+                            </button>
                         </div>
 
-                        <div class="space-y-3 relative z-10">
-                            <button type="button" onclick="goToStep('step-identification')"
-                                class="w-full bg-gradient-to-r from-sky-400 to-primary hover:from-sky-300 hover:to-primary_light text-slate-950 font-extrabold text-base sm:text-lg py-4 px-6 rounded-2xl shadow-lg shadow-sky-500/25 transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-3">
-                                <span>Commencer le sondage interactif</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                        <!-- Boutons d'accès direct -->
+                        <div class="sm:col-span-7 flex flex-col gap-3 text-left">
+                            <button type="button" onclick="startOrResumeSurvey()" id="btn-start-main"
+                                class="w-full bg-primary hover:bg-primary_dark text-white font-extrabold text-base sm:text-lg py-4 px-6 rounded-2xl shadow-lg shadow-sky-500/30 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
+                                <span id="btn-start-label">Commencer l'échange</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                             </button>
 
-                            <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
-                                <button type="button" onclick="openLiveResults()"
-                                    class="text-xs sm:text-sm font-semibold text-sky-300 hover:text-white flex items-center gap-1.5 py-1">
-                                    <span>📊 Afficher les résultats en direct (Grand Écran)</span>
-                                </button>
-                                <button type="button" onclick="openBilanModal()"
-                                    class="text-xs sm:text-sm font-semibold text-amber-300 hover:text-amber-200 flex items-center gap-1.5 py-1">
-                                    <span>📌 Revoir les chiffres clés CTG</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                            <button type="button" onclick="openLiveResults()"
+                                class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm py-3.5 px-5 rounded-2xl transition-all flex items-center justify-center gap-2">
+                                <span>📊 Résultats en direct (Grand Écran)</span>
+                            </button>
 
-                    <!-- Carte QR Code pour projection Grand Écran -->
-                    <div class="lg:col-span-5 bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl p-5 sm:p-6 flex flex-col items-center justify-between text-center">
-                        <div>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-700 text-xs font-bold mb-2 shadow-sm">
-                                📱 Accès Mobile Direct
-                            </span>
-                            <h3 class="font-bold text-slate-800 text-base sm:text-lg">Scannez pour rejoindre</h3>
-                            <p class="text-xs text-slate-500 mb-3">Ouvrez l'appareil photo de votre téléphone</p>
-                        </div>
-
-                        <!-- Conteneur QR Code -->
-                        <div onclick="openQrModal()" title="Cliquer pour agrandir en plein écran"
-                            class="bg-white p-3.5 rounded-2xl shadow-md border border-slate-200 cursor-pointer hover:scale-105 transition-transform my-1">
-                            <div id="qrcode-home" class="w-40 h-40 sm:w-44 sm:h-44 flex items-center justify-center mx-auto"></div>
-                        </div>
-
-                        <div class="w-full mt-3 space-y-2">
-                            <div class="text-[11px] font-mono bg-white px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 truncate">
-                                https://ccmvr.github.io/CTG-Commission-08102026/
-                            </div>
-                            <button type="button" onclick="openQrModal()"
-                                class="w-full py-2 px-4 rounded-xl bg-slate-200/80 hover:bg-slate-300/80 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                                </svg>
-                                Agrandir le QR Code pour la salle
+                            <button type="button" onclick="openBilanModal()"
+                                class="w-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-xs py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                <span>📌 Mémo Chiffres Clés CTG (2022-2026)</span>
                             </button>
                         </div>
                     </div>
-
                 </div>
             </div>
 
             <!-- ========================================================= -->
-            <!-- ÉTAPE 2 : IDENTIFICATION RAPIDE (ADAPTÉE MOBILE)          -->
+            <!-- ÉTAPE 2 : IDENTIFICATION RAPIDE                           -->
             <!-- ========================================================= -->
             <div class="step" id="step-identification">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-xs font-extrabold text-primary tracking-wider uppercase bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
-                        Étape 1 • Identification rapide
-                    </span>
-                    <button type="button" onclick="goToStep('step-accueil')" class="text-xs font-semibold text-slate-500 hover:text-slate-800">
-                        ← Retour à l'accueil
-                    </button>
-                </div>
+                <span class="text-xs font-extrabold text-primary tracking-wider uppercase mb-1 block">1. Identification</span>
+                <h2 class="text-xl sm:text-2xl font-extrabold mb-5 text-slate-900">Qui participe ?</h2>
 
-                <h2 class="text-xl sm:text-2xl font-extrabold mb-2 text-slate-900">Qui participe à la commission ?</h2>
-                <p class="text-sm text-slate-500 mb-6">
-                    Ces informations permettent d'associer vos propositions à la dynamique du territoire (conformément au RGPD, indiquez simplement votre prénom et l'initiale de votre nom).
-                </p>
-
-                <div class="space-y-6 mb-8">
-                    <!-- Champ Prénom + Initiale -->
+                <div class="space-y-5 mb-7">
                     <div>
-                        <label for="structure_name" class="block text-sm font-bold text-slate-700 mb-2">
-                            Votre Prénom et l'initiale de votre nom <span class="text-red-500">*</span>
+                        <label for="structure_name" class="block text-sm font-bold text-slate-700 mb-1.5">
+                            Prénom et initiale du nom <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="structure_name" placeholder="Ex : Marie D. ou Jean-Paul M."
-                            class="w-full text-base sm:text-lg px-4 py-3.5 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium"
+                        <input type="text" id="structure_name" placeholder="Ex : Marie D."
+                            class="w-full text-base sm:text-lg px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-primary transition-all font-medium"
                             required>
                     </div>
 
-                    <!-- Sélection rapide de la Commune (Boutons ergonomiques sur téléphone) -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <label class="block text-sm font-bold text-slate-700">
-                                Votre Commune (touchez pour sélectionner)
-                            </label>
+                            <label class="block text-sm font-bold text-slate-700">Commune</label>
                             <span id="selected-commune-badge" class="text-xs font-bold text-primary bg-sky-50 px-2.5 py-0.5 rounded-full hidden"></span>
                         </div>
-                        <div class="flex flex-wrap gap-2" id="communes-chips">
-                            <!-- Généré en JS avec les 14 communes de la CCMVR -->
-                        </div>
+                        <div class="flex flex-wrap gap-1.5" id="communes-chips"></div>
                         <input type="hidden" id="commune_name" value="">
                     </div>
                 </div>
 
-                <div class="flex flex-col-reverse sm:flex-row items-center justify-between pt-5 border-t border-slate-100 gap-3">
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100 gap-3">
                     <button type="button" onclick="goToStep('step-accueil')"
-                        class="w-full sm:w-auto py-3 px-6 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-sm transition-colors">
+                        class="py-3 px-5 rounded-xl text-slate-500 hover:bg-slate-100 font-semibold text-sm">
                         Retour
                     </button>
                     <button type="button" onclick="validateIdentification()"
-                        class="w-full sm:w-auto bg-slate-900 hover:bg-primary text-white font-bold py-3.5 px-8 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 text-base">
-                        <span>Accéder aux axes du Plan de Mandat</span>
+                        class="bg-slate-900 hover:bg-primary text-white font-bold py-3.5 px-8 rounded-full shadow-md transition-all flex items-center gap-2 text-sm sm:text-base">
+                        <span>Suivant</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
@@ -452,211 +392,38 @@
             </div>
 
             <!-- ========================================================= -->
-            <!-- ÉTAPE 3 : HUB DES AXES (ROUE INTERACTIVE + CARTES MOBILE) -->
+            <!-- ÉTAPE 3 : ROUE VISUELLE DES AXES (ZÉRO EMPILAGE / BLABLA) -->
             <!-- ========================================================= -->
             <div class="step" id="step-themes">
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                    <span class="text-xs font-extrabold text-primary tracking-wider uppercase bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
-                        Étape 2 • Parcours à la carte
-                    </span>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                    <div>
+                        <span class="text-xs font-extrabold text-primary tracking-wider uppercase block">2. À la carte</span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Axes du Plan de Mandat & CTG</h2>
+                    </div>
                     <button type="button" onclick="openBilanModal()"
-                        class="text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-colors">
-                        <span>📊 Mémo Chiffres Clés CTG (2022-2026)</span>
+                        class="text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-3 py-2 rounded-xl shrink-0">
+                        📊 Chiffres clés
                     </button>
                 </div>
 
-                <h2 class="text-xl sm:text-3xl font-extrabold text-slate-900 mb-1">
-                    Plan de Mandat × Future CTG 2027–2031
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-600 mb-6">
-                    Touchez l'un des <strong>4 axes politiques du mandat</strong> ou le <strong>Cap central de la CTG</strong> pour voter dans les nuages de mots et partager vos priorités.
+                <p class="text-xs sm:text-sm text-slate-500 mb-4">
+                    Touchez l'un des 4 axes ou le cœur central <strong>Cap CTG</strong> pour voter.
                 </p>
 
-                <!-- Rappel du filtre d'exigence du Plan de Mandat -->
-                <div class="bg-slate-900 text-white rounded-2xl p-3.5 sm:p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl shrink-0">🧭</span>
-                        <div class="text-xs sm:text-sm leading-snug">
-                            <span class="font-bold text-amber-300">Cap transversal « Nos Enjeux » :</span>
-                            Répondre aux besoins réels • Agir dans nos compétences statutaires • Maîtriser nos moyens financiers • Coopérer avec communes & associations.
-                        </div>
-                    </div>
+                <!-- ROUE / CONSTELLATION VISUELLE SUR TOUS LES ÉCRANS (MOBILE & DESKTOP) -->
+                <div class="theme-circle-container my-2 sm:my-4" id="theme-circle">
+                    <!-- Généré par JS -->
                 </div>
 
-                <!-- VUE 1 : Schéma Radial Interactif (Tablette & Grand Écran >= 640px) -->
-                <div class="hidden sm:block mb-8">
-                    <div class="theme-circle-container" id="theme-circle">
-                        <!-- Généré dynamiquement par JS -->
-                    </div>
-                </div>
-
-                <!-- VUE 2 : Cartes Tactiles Modernes (Toujours visibles sur Mobile, et en accès rapide sous la roue sur Desktop) -->
-                <div class="space-y-3 mb-8" id="theme-cards-mobile">
-                    <!-- Généré dynamiquement par JS pour une ergonomie parfaite sur téléphone -->
-                </div>
-
-                <!-- Pied de page du Hub -->
-                <div class="flex flex-col sm:flex-row items-center justify-between pt-5 border-t border-slate-200 gap-4">
-                    <div class="text-xs sm:text-sm text-slate-500 text-center sm:text-left">
-                        💡 Vous pouvez explorer les axes dans l'ordre de votre choix.
-                    </div>
-                    <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2.5">
-                        <button type="button" onclick="openLiveResults()"
-                            class="w-full sm:w-auto bg-sky-100 hover:bg-sky-200 text-primary_dark font-bold py-3 px-5 rounded-2xl text-sm transition-all flex items-center justify-center gap-2">
-                            <span>📊 Voir les nuages en direct</span>
-                        </button>
-                        <button type="button" onclick="goToStep('step-merci')"
-                            class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 text-sm">
-                            <span>J'ai terminé ma participation</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========================================================= -->
-            <!-- ÉTAPE 4 : NUAGE DE MOTS DYNAMIQUE (JUSQU'À 5 VOTES)       -->
-            <!-- ========================================================= -->
-            <div class="step" id="step-cloud">
-                <!-- Barre supérieure de l'Axe -->
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                    <div class="inline-flex items-center gap-2">
-                        <span id="cloud-axe-badge" class="text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-primary_dark">
-                            Axe
-                        </span>
-                        <span id="cloud-step-indicator" class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
-                            Question 1/3
-                        </span>
-                    </div>
-                    <button type="button" onclick="goToStep('step-themes')"
-                        class="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-slate-100">
-                        ✕ Retour aux axes
+                <!-- Pied de page épuré -->
+                <div class="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-slate-100 gap-3 mt-4">
+                    <button type="button" onclick="resetCurrentParticipantSession()"
+                        class="text-xs text-slate-400 hover:text-slate-600 underline">
+                        Changer de participant
                     </button>
-                </div>
-
-                <!-- Encadré Rappel des Constats CTG (Pliable sur mobile pour gagner de la place) -->
-                <div class="mb-5 bg-amber-50/90 border border-amber-200/90 rounded-2xl overflow-hidden">
-                    <button type="button" onclick="toggleConstatsBox()"
-                        class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-bold text-amber-900 hover:bg-amber-100/60 transition-colors">
-                        <span class="flex items-center gap-2">
-                            <span>💡 Rappel des constats CTG sur cet axe</span>
-                            <span class="text-[11px] font-normal text-amber-700 hidden sm:inline">(Bilan 2022-2026 & Enjeux CAF)</span>
-                        </span>
-                        <span id="constats-toggle-label" class="text-xs font-semibold text-amber-700 underline">Masquer ▲</span>
-                    </button>
-                    <div id="constats-box-content" class="px-4 pb-3.5 pt-1 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-amber-950 border-t border-amber-200/60">
-                        <!-- Injecté dynamiquement selon l'axe -->
-                    </div>
-                </div>
-
-                <!-- Intitulé de la Question -->
-                <h2 class="text-lg sm:text-2xl font-extrabold text-slate-900 mb-3 leading-snug" id="cloud-question">
-                    Question chargée dynamiquement
-                </h2>
-
-                <!-- Bandeau Compteur de Votes (Jusqu'à 5 choix) & Tri -->
-                <div class="bg-sky-50 border border-sky-200/80 rounded-2xl p-3 sm:p-3.5 mb-4 flex flex-wrap items-center justify-between gap-2">
-                    <div class="flex items-center gap-2 text-xs sm:text-sm text-slate-700 font-semibold">
-                        <span>👆 Touchez les idées pour voter <strong class="text-primary_dark">(jusqu'à 5 choix)</strong></span>
-                    </div>
-                    <div class="flex items-center gap-2 ml-auto">
-                        <button type="button" onclick="toggleCloudSort()" id="btn-sort-cloud"
-                            class="text-xs font-bold px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 shadow-sm transition-colors">
-                            🔥 Trier par votes
-                        </button>
-                        <div class="bg-slate-900 text-white font-extrabold px-3.5 py-1.5 rounded-xl text-xs sm:text-sm shadow-sm flex items-center gap-1.5">
-                            <span id="vote-count" class="text-sky-300">0</span>
-                            <span>/ 5 votes</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Zone du Nuage de Mots -->
-                <div class="bg-slate-50/70 border-2 border-slate-200/80 shadow-inner rounded-3xl mb-5 overflow-hidden relative">
-                    <div id="word-cloud" class="word-cloud-container">
-                        <!-- Boutons Mots générés par JS -->
-                    </div>
-                </div>
-
-                <!-- Zone d'ajout d'une nouvelle idée par l'élu -->
-                <div class="bg-white p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 mb-6 shadow-sm">
-                    <label for="new_idea_input" class="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
-                        ➕ Votre idée n'est pas encore dans le nuage ? Ajoutez-la (elle sera automatiquement sélectionnée) :
-                    </label>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="new_idea_input" maxlength="55"
-                            placeholder="Ex : Soutien administratif aux assos, Navette jeunes..."
-                            onkeypress="if(event.key === 'Enter') { event.preventDefault(); addNewIdea(); }"
-                            class="flex-grow text-sm sm:text-base px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-slate-50 focus:bg-white font-medium">
-                        <button type="button" onclick="addNewIdea()"
-                            class="bg-slate-800 hover:bg-slate-900 active:scale-95 text-white font-bold px-5 py-3 rounded-xl transition-all whitespace-nowrap shadow-sm flex items-center justify-center gap-1.5 text-sm">
-                            <span>+ Ajouter au nuage</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Navigation Bas de Page -->
-                <div class="flex flex-col-reverse sm:flex-row items-center justify-between pt-4 border-t border-slate-200 gap-3">
-                    <button type="button" onclick="backFromCloud()"
-                        class="w-full sm:w-auto text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-bold px-5 py-3 border border-slate-200 rounded-2xl text-sm transition-colors">
-                        ← Précédent
-                    </button>
-                    <button type="button" onclick="submitCloudAndGo()" id="btn-cloud-next"
-                        class="w-full sm:w-auto bg-primary hover:bg-primary_dark active:scale-95 text-white font-extrabold py-3.5 px-8 rounded-2xl shadow-lg shadow-sky-500/25 transition-all flex items-center justify-center gap-2 text-base">
-                        <span>Valider mes votes & Continuer</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- ========================================================= -->
-            <!-- ÉTAPE 5 : EXPRESSION LIBRE DE L'AXE                       -->
-            <!-- ========================================================= -->
-            <div class="step" id="step-free-text">
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                    <div class="inline-flex items-center gap-2">
-                        <span id="text-axe-badge" class="text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-primary_dark">
-                            Axe
-                        </span>
-                        <span id="text-step-indicator" class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
-                            Expression libre
-                        </span>
-                    </div>
-                    <button type="button" onclick="goToStep('step-themes')"
-                        class="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-slate-100">
-                        ✕ Retour aux axes
-                    </button>
-                </div>
-
-                <h2 class="text-lg sm:text-2xl font-extrabold mb-2 text-slate-900" id="free-text-question">
-                    Votre expression libre sur cet axe
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-500 mb-4" id="free-text-subtitle">
-                    Vous pouvez détailler ici un constat particulier, un point de vigilance ou une proposition concrète (ou passer directement à l'enregistrement si vos votes dans les nuages suffisent).
-                </p>
-
-                <!-- Récapitulatif des mots votés par l'élu sur cet axe -->
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 mb-4 text-xs">
-                    <div class="font-bold text-slate-700 mb-1.5">✅ Vos votes retenus sur cet axe :</div>
-                    <div id="recap-votes-axe" class="flex flex-wrap gap-1.5 text-slate-600"></div>
-                </div>
-
-                <textarea id="free_text_input" rows="4"
-                    placeholder="Écrivez ici votre remarque, constat ou proposition concrète..."
-                    class="w-full text-base px-4 py-3.5 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-colors resize-none mb-6 font-medium"></textarea>
-
-                <div class="flex flex-col-reverse sm:flex-row items-center justify-between pt-4 border-t border-slate-200 gap-3">
-                    <button type="button" onclick="backFromFreeText()"
-                        class="w-full sm:w-auto text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-bold px-5 py-3 border border-slate-200 rounded-2xl text-sm transition-colors">
-                        ← Retour au nuage
-                    </button>
-                    <button type="button" onclick="saveAxeCompletion()" id="btn-save-axe"
-                        class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold py-3.5 px-8 rounded-2xl shadow-lg shadow-emerald-600/25 transition-all flex items-center justify-center gap-2 text-base">
-                        <span>Enregistrer cet axe</span>
+                    <button type="button" onclick="goToStep('step-merci')"
+                        class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-7 rounded-full shadow-md transition-all flex items-center justify-center gap-2 text-sm">
+                        <span>J'ai terminé le sondage</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                         </svg>
@@ -665,168 +432,234 @@
             </div>
 
             <!-- ========================================================= -->
-            <!-- ÉTAPE 6 : REMERCIEMENTS & ACCÈS DIRECT SYNTHÈSE           -->
+            <!-- ÉTAPE 4 : NUAGE DE MOTS DYNAMIQUE (JUSQU'À 5 VOTES)       -->
+            <!-- ========================================================= -->
+            <div class="step" id="step-cloud">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                    <div class="flex items-center gap-2">
+                        <span id="cloud-axe-badge" class="text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-primary_dark">
+                            Axe
+                        </span>
+                        <span id="cloud-step-indicator" class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+                            1/2
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="toggleConstatsBox()"
+                            class="text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg">
+                            💡 Constats CTG
+                        </button>
+                        <button type="button" onclick="goToStep('step-themes')"
+                            class="text-xs font-bold text-slate-500 hover:text-slate-800 py-1 px-2 rounded-lg hover:bg-slate-100">
+                            ✕ Menu
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tiroir Constats CTG (Masqué par défaut pour éviter le blabla, ouvrable en 1 clic) -->
+                <div id="constats-box-content" class="hidden mb-4 p-3 bg-amber-50 border border-amber-200 rounded-2xl grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-amber-950"></div>
+
+                <!-- Question -->
+                <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mb-3 leading-snug" id="cloud-question">
+                    Question
+                </h2>
+
+                <!-- Compteur 5 votes & Tri -->
+                <div class="bg-sky-50 border border-sky-200/80 rounded-2xl p-2.5 sm:p-3 mb-4 flex items-center justify-between gap-2">
+                    <span class="text-xs sm:text-sm text-slate-700 font-semibold">
+                        Votez jusqu'à <strong class="text-primary_dark">5 idées</strong> :
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="toggleCloudSort()" id="btn-sort-cloud"
+                            class="text-xs font-bold px-2.5 py-1 rounded-xl bg-white hover:bg-slate-100 text-slate-600 border border-slate-200">
+                            🔥 Trier
+                        </button>
+                        <span class="bg-slate-900 text-white font-extrabold px-3 py-1 rounded-full text-xs sm:text-sm">
+                            <span id="vote-count" class="text-sky-300">0</span> / 5
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Nuage de Mots -->
+                <div class="bg-slate-50/70 border-2 border-slate-200/80 shadow-inner rounded-3xl mb-4 overflow-hidden relative">
+                    <div id="word-cloud" class="word-cloud-container"></div>
+                </div>
+
+                <!-- Ajout d'une idée -->
+                <div class="bg-white p-3 rounded-2xl border border-slate-200 mb-5 flex flex-col sm:flex-row gap-2">
+                    <input type="text" id="new_idea_input" maxlength="55"
+                        placeholder="Ajouter une autre idée (ex: Navette ados, Soutien assos...)"
+                        onkeypress="if(event.key === 'Enter') { event.preventDefault(); addNewIdea(); }"
+                        class="flex-grow text-sm px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:border-primary bg-slate-50 focus:bg-white font-medium">
+                    <button type="button" onclick="addNewIdea()"
+                        class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm whitespace-nowrap">
+                        + Ajouter l'idée
+                    </button>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex items-center justify-between pt-3 border-t border-slate-100 gap-3">
+                    <button type="button" onclick="backFromCloud()"
+                        class="text-slate-500 hover:text-slate-800 font-bold px-4 py-2.5 rounded-xl text-sm">
+                        ← Précédent
+                    </button>
+                    <button type="button" onclick="nextFromCloud()" id="btn-cloud-next"
+                        class="bg-primary hover:bg-primary_dark text-white font-extrabold py-3 px-7 rounded-full shadow-md transition-all flex items-center gap-2 text-sm sm:text-base">
+                        <span>Suivant</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- ÉTAPE 5 : EXPRESSION LIBRE & ENREGISTREMENT DE L'AXE      -->
+            <!-- ========================================================= -->
+            <div class="step" id="step-free-text">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                    <span id="text-axe-badge" class="text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-primary_dark">
+                        Axe
+                    </span>
+                    <button type="button" onclick="goToStep('step-themes')"
+                        class="text-xs font-bold text-slate-500 hover:text-slate-800 py-1 px-2 rounded-lg hover:bg-slate-100">
+                        ✕ Menu
+                    </button>
+                </div>
+
+                <h2 class="text-lg sm:text-xl font-extrabold mb-3 text-slate-900" id="free-text-question">
+                    Expression libre
+                </h2>
+
+                <!-- Récapitulatif des votes sélectionnés -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 mb-4 text-xs">
+                    <div class="font-bold text-slate-600 mb-1.5">Vos idées sélectionnées sur cet axe :</div>
+                    <div id="recap-votes-axe" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <textarea id="free_text_input" rows="4"
+                    oninput="onFreeTextInput(this.value)"
+                    placeholder="Ajoutez une remarque ou précision si vous le souhaitez (facultatif)..."
+                    class="w-full text-base px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-primary transition-colors resize-none mb-5 font-medium"></textarea>
+
+                <div class="flex items-center justify-between pt-3 border-t border-slate-100 gap-3">
+                    <button type="button" onclick="backFromFreeText()"
+                        class="text-slate-500 hover:text-slate-800 font-bold px-4 py-2.5 rounded-xl text-sm">
+                        ← Précédent
+                    </button>
+                    <button type="button" onclick="saveAxeCompletion()" id="btn-save-axe"
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 px-7 rounded-full shadow-md transition-all flex items-center gap-2 text-sm sm:text-base">
+                        <span>Valider cet axe</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- ÉTAPE 6 : MERCI                                           -->
             <!-- ========================================================= -->
             <div class="step" id="step-merci">
-                <div class="text-center py-8 sm:py-12">
-                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 mb-5 shadow-inner">
+                <div class="text-center py-8">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 mb-5">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                     </div>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold mb-3 text-slate-900">
-                        Merci pour votre contribution !
-                    </h2>
-                    <p class="text-sm sm:text-base text-slate-600 mb-8 max-w-lg mx-auto leading-relaxed">
-                        Vos votes et vos propositions ont bien été enregistrés. Ils alimenteront directement les ateliers d'octobre-novembre et le <strong>2ème COPIL CTG du 5 novembre 2026</strong>.
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mb-3 text-slate-900">Merci pour votre contribution !</h2>
+                    <p class="text-sm sm:text-base text-slate-600 mb-7 max-w-md mx-auto">
+                        Vos choix sont enregistrés pour préparer la future CTG 2027–2031.
                     </p>
-
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-xl mx-auto">
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
                         <button type="button" onclick="openLiveResults()"
-                            class="w-full sm:w-auto bg-primary hover:bg-primary_dark text-white font-extrabold py-3.5 px-7 rounded-2xl shadow-lg shadow-sky-500/25 transition-all flex items-center justify-center gap-2">
-                            <span>📊 Voir les résultats en direct</span>
+                            class="w-full sm:w-auto bg-primary hover:bg-primary_dark text-white font-extrabold py-3 px-7 rounded-full shadow-md">
+                            📊 Voir les résultats en direct
                         </button>
                         <button type="button" onclick="goToStep('step-themes')"
-                            class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3.5 px-6 rounded-2xl transition-all">
-                            Compléter un autre axe
+                            class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 px-6 rounded-full">
+                            Retour à la roue des axes
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Toast Notification (Erreur / Succès) -->
+            <!-- Toast Notification -->
             <div id="toast-message"
-                class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-2xl z-[120] text-center max-w-[92vw] border border-slate-700">
+                class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-2xl z-[120] text-center max-w-[92vw]">
                 Message
             </div>
         </div>
     </main>
 
-    <!-- ========================================================= -->
-    <!-- MODAL 1 : QR CODE PLEIN ÉCRAN (POUR PROJECTION SALLE)     -->
-    <!-- ========================================================= -->
+    <!-- MODAL QR CODE PLEIN ÉCRAN -->
     <div id="qr-fullscreen-modal" class="modal-overlay p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl p-6 sm:p-10 text-center relative animate-pulse-soft">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-6 sm:p-8 text-center relative">
             <button type="button" onclick="closeQrModal()"
-                class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
-                ✕
-            </button>
-            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-100 text-primary_dark font-bold text-xs uppercase mb-3">
-                📱 Participation Interactive sur Smartphone
+                class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">✕</button>
+            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mb-4">Scannez pour participer</h3>
+            <div class="bg-white p-4 rounded-3xl shadow-md border-4 border-primary inline-block mx-auto mb-4">
+                <div id="qrcode-fullscreen" class="w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center mx-auto"></div>
             </div>
-            <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">
-                Scannez ce QR Code avec votre téléphone
-            </h3>
-            <p class="text-sm text-slate-500 mb-6">
-                Commission Enfance – Jeunesse – Solidarités – Prévention • Jeudi 8 octobre 2026
-            </p>
-            <div class="bg-white p-5 rounded-3xl shadow-lg border-4 border-primary inline-block mx-auto mb-5">
-                <div id="qrcode-fullscreen" class="w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center mx-auto"></div>
-            </div>
-            <div class="text-sm sm:text-base font-mono font-bold text-primary_dark bg-sky-50 py-2.5 px-4 rounded-xl border border-sky-200 max-w-md mx-auto truncate">
+            <div class="text-xs sm:text-sm font-mono font-bold text-primary_dark bg-sky-50 py-2 px-3 rounded-xl border border-sky-200 truncate">
                 https://ccmvr.github.io/CTG-Commission-08102026/
             </div>
         </div>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- MODAL 2 : MÉMO CHIFFRES CLÉS DU BILAN CTG 2022-2026       -->
-    <!-- ========================================================= -->
+    <!-- MODAL MÉMO CHIFFRES CLÉS -->
     <div id="bilan-modal" class="modal-overlay p-3 sm:p-6">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
-            <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
-                <div>
-                    <h3 class="text-lg sm:text-xl font-extrabold">📊 Synthèse du Bilan CTG 2022–2026 & Enjeux</h3>
-                    <p class="text-xs text-slate-300">Repères clés pour éclairer vos choix (Données CAF Haute-Loire & CCMVR)</p>
-                </div>
-                <button type="button" onclick="closeBilanModal()" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center">✕</button>
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[88vh] flex flex-col overflow-hidden">
+            <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+                <h3 class="text-base sm:text-lg font-extrabold">📊 Repères Clés Bilan CTG 2022–2026</h3>
+                <button type="button" onclick="closeBilanModal()" class="w-8 h-8 rounded-full bg-slate-800 text-white">✕</button>
             </div>
-            <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="p-4 rounded-2xl bg-sky-50 border border-sky-200">
-                        <div class="font-extrabold text-primary_dark text-base mb-1.5">👶 Petite Enfance & SPPE (1,73 M€ CAF)</div>
-                        <ul class="space-y-1 text-slate-700 list-disc list-inside">
-                            <li><strong>15 structures</strong> : 5 crèches, 2 micro-crèches, 6 MAM, 2 RPE.</li>
-                            <li>Heures de présence en hausse (<strong>+11,8 %</strong>), mais <strong>taux d'occupation autour de 66 %</strong>.</li>
-                            <li><strong>Baisse de la natalité</strong> (7,5 ‰) et départs en retraite d'assistantes maternelles.</li>
-                            <li>Compétence <strong>Autorité Organisatrice du SPPE</strong> : adapter l'offre aux besoins réels.</li>
-                        </ul>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-indigo-50 border border-indigo-200">
-                        <div class="font-extrabold text-indigo-900 text-base mb-1.5">🎒 Enfance 3-11 ans & Vie Associative</div>
-                        <ul class="space-y-1 text-slate-700 list-disc list-inside">
-                            <li><strong>9 périscolaires, 10 extrascolaires, 1 ludothèque</strong> (636 k€ CAF Enfance/Jeunesse).</li>
-                            <li>Fréquentation globale stable (+0,9 % péri / -1,8 % extra), mais disparités selon les lieux.</li>
-                            <li><strong>Fragilité des associations gestionnaires</strong> (bénévolat, complexité RH/admin).</li>
-                            <li>Montée en puissance de l'<strong>accueil inclusif (handicap / besoins spécifiques)</strong>.</li>
-                        </ul>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200">
-                        <div class="font-extrabold text-amber-900 text-base mb-1.5">🛹 Jeunesse 11-17 ans : Le point de vigilance</div>
-                        <ul class="space-y-1 text-slate-700 list-disc list-inside">
-                            <li><strong>6 accueils ados, 1 PAEJ</strong>, création d'un <strong>Référent Jeunesse (0,5 ETP)</strong> en 2025.</li>
-                            <li>⚠️ <strong>Chute de -41 % des heures d'accueil ados</strong> entre 2022 (46 299 h) et 2025 (27 120 h).</li>
-                            <li>Nécessité de <strong>réinterroger le modèle d'intervention</strong> au regard des pratiques actuelles des jeunes.</li>
-                        </ul>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
-                        <div class="font-extrabold text-emerald-900 text-base mb-1.5">👨‍👩‍👧 Parentalité, Inclusion & Solidarités</div>
-                        <ul class="space-y-1 text-slate-700 list-disc list-inside">
-                            <li>Création de l'<strong>Observatoire Enfance-Jeunesse-Parentalité</strong> (2025) et programme territorial 2026.</li>
-                            <li>Réflexion sur un <strong>Lieu Ressource / LAEP</strong> et structuration d'un parcours handicap (DAHLIR).</li>
-                            <li>Reprise en gestion du <strong>CLAS</strong> (1er oct. 2026), actions <strong>CISPD</strong>, Semaine Bleue.</li>
-                            <li>Soutien financier global CAF sur le territoire : <strong>2 661 981 € en 2025</strong>.</li>
-                        </ul>
-                    </div>
+            <div class="p-4 sm:p-6 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+                <div class="p-3.5 rounded-2xl bg-sky-50 border border-sky-200">
+                    <div class="font-extrabold text-primary_dark mb-1">👶 Petite Enfance & SPPE (1,73 M€ CAF)</div>
+                    <p class="text-slate-700">15 structures • +11,8 % d'heures mais <strong>66 % d'occupation</strong> • Baisse natalité (7,5 ‰) • Autorité Organisatrice SPPE.</p>
                 </div>
-            </div>
-            <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex justify-end">
-                <button type="button" onclick="closeBilanModal()" class="bg-slate-900 text-white font-bold px-6 py-2.5 rounded-xl text-sm">Fermer</button>
+                <div class="p-3.5 rounded-2xl bg-indigo-50 border border-indigo-200">
+                    <div class="font-extrabold text-indigo-900 mb-1">🎒 Enfance 3-11 ans & Associations</div>
+                    <p class="text-slate-700">9 périscolaires, 10 extrascolaires • Fréquentation stable • <strong>Fragilité des bureaux associatifs</strong> • Enjeu inclusion/handicap.</p>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200">
+                    <div class="font-extrabold text-amber-900 mb-1">🛹 Jeunesse 11-17 ans</div>
+                    <p class="text-slate-700">6 accueils ados, Référent Jeunesse (0,5 ETP) • ⚠️ <strong>Chute de -41 % des heures d'accueil ados</strong> → offre à réinventer.</p>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200">
+                    <div class="font-extrabold text-emerald-900 mb-1">👨‍👩‍👧 Parentalité, Solidarités & CAF</div>
+                    <p class="text-slate-700">Observatoire créé en 2025 • Question d'un LAEP • Reprise CLAS (1er oct.) • CISPD • <strong>2,66 M€ d'aides CAF au total</strong>.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- MODAL 3 : RÉSULTATS EN DIRECT / MODE GRAND ÉCRAN          -->
-    <!-- ========================================================= -->
+    <!-- MODAL RÉSULTATS EN DIRECT (GRAND ÉCRAN) -->
     <div id="live-results-modal" class="modal-overlay p-2 sm:p-6">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-6xl h-[92vh] flex flex-col overflow-hidden">
-            <!-- Header Direct -->
-            <div class="px-4 sm:px-6 py-4 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
+            <div class="px-4 sm:px-6 py-3.5 bg-slate-900 text-white flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5">
                     <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
-                    <div>
-                        <h2 class="text-base sm:text-xl font-extrabold leading-tight">Synthèse Interactive en Direct • Commission du 08/10/2026</h2>
-                        <p class="text-xs text-slate-300">Nuages de mots pondérés & contributions des élus en temps réel</p>
-                    </div>
+                    <h2 class="text-sm sm:text-lg font-extrabold">Synthèse en Direct • Commission du 08/10/2026</h2>
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="refreshLiveResults()"
-                        class="bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/40 text-sky-200 font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-colors">
-                        <span>🔄 Actualiser</span>
+                        class="bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/40 text-sky-200 font-bold px-3 py-1.5 rounded-xl text-xs">
+                        🔄 Actualiser
                     </button>
                     <button type="button" onclick="closeLiveResults()"
-                        class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded-xl text-xs transition-colors">
+                        class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs">
                         Fermer ✕
                     </button>
                 </div>
             </div>
-
-            <!-- Onglets de sélection d'Axe dans le Direct -->
-            <div class="px-4 sm:px-6 py-2.5 bg-slate-100 border-b border-slate-200 flex items-center gap-2 overflow-x-auto" id="live-tabs-bar">
-                <!-- Généré en JS -->
-            </div>
-
-            <!-- Contenu Synthèse Direct -->
-            <div class="flex-grow overflow-y-auto p-4 sm:p-6 bg-slate-50 space-y-6" id="live-results-body">
-                <!-- Généré dynamiquement en JS -->
-            </div>
+            <div class="px-4 py-2 bg-slate-100 border-b border-slate-200 flex items-center gap-2 overflow-x-auto" id="live-tabs-bar"></div>
+            <div class="flex-grow overflow-y-auto p-4 sm:p-6 bg-slate-50 space-y-5" id="live-results-body"></div>
         </div>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- ICÔNE DISCRÈTE & ESPACE ADMINISTRATEUR (admin@ccmvr.fr)   -->
-    <!-- ========================================================= -->
+    <!-- BOUTON DISCRET ADMIN -->
     <button type="button" onclick="openAdminLogin()"
         class="fixed bottom-3 right-3 bg-white/80 hover:bg-white text-slate-400 hover:text-slate-700 p-2.5 rounded-full shadow-md border border-slate-200 z-40 transition-all"
         title="Administration (admin@ccmvr.fr)">
@@ -835,75 +668,70 @@
         </svg>
     </button>
 
-    <!-- Modal Connexion Admin -->
+    <!-- MODAL LOGIN ADMIN -->
     <div id="admin-login-modal" class="modal-overlay p-4">
         <div class="bg-white p-7 rounded-3xl shadow-2xl w-full max-w-sm relative">
             <button onclick="closeAdminLogin()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">✕</button>
-            <h3 class="text-xl font-extrabold text-slate-900 mb-1">Panneau Administrateur</h3>
-            <p class="text-slate-500 mb-5 text-xs">Authentification Supabase sécurisée (<code>admin@ccmvr.fr</code>)</p>
-            <input type="text" id="admin-user" value="admin@ccmvr.fr" placeholder="admin@ccmvr.fr"
+            <h3 class="text-xl font-extrabold text-slate-900 mb-1">Administration</h3>
+            <p class="text-slate-500 mb-4 text-xs">Compte : <code>admin@ccmvr.fr</code></p>
+            <input type="text" id="admin-user" value="admin@ccmvr.fr"
                 class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-primary focus:outline-none mb-3 text-sm font-medium"
                 onkeypress="if(event.key === 'Enter') document.getElementById('admin-pwd').focus()">
-            <input type="password" id="admin-pwd" placeholder="Mot de passe Supabase"
+            <input type="password" id="admin-pwd" placeholder="Mot de passe"
                 class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-primary focus:outline-none mb-4 text-sm font-medium"
                 onkeypress="if(event.key === 'Enter') loginAdmin()">
             <button onclick="loginAdmin()" id="btn-login"
-                class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 transition-colors text-sm">
-                Déverrouiller le panneau
+                class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 text-sm">
+                Déverrouiller
             </button>
         </div>
     </div>
 
-    <!-- Dashboard Admin -->
+    <!-- DASHBOARD ADMIN -->
     <div id="admin-dashboard" class="modal-overlay p-2 sm:p-6">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-6xl h-[92vh] flex flex-col overflow-hidden">
-            <div class="px-5 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-3 bg-slate-50">
+            <div class="px-5 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2 bg-slate-50">
                 <div>
-                    <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2">
-                        <span>🛠️ Administration Commission 08/10/2026</span>
-                    </h2>
-                    <p class="text-xs text-slate-500">Tables : <code>table_elus_commission_08102026_reponses</code> & <code>table_elus_commission_08102026_idees</code></p>
+                    <h2 class="text-base sm:text-lg font-extrabold text-slate-900">🛠️ Tableau de Bord Administrateur</h2>
+                    <p class="text-xs text-slate-500">La suppression d'une ligne de participation retire automatiquement tous ses votes associés dans les nuages.</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <button onclick="seedDefaultWordsToDB()"
-                        class="bg-amber-100 text-amber-800 hover:bg-amber-200 font-bold px-3.5 py-2 rounded-xl text-xs transition-colors">
-                        🌱 Injecter mots d'amorçage
+                    <button onclick="recalculateAllIdeesFromReponses(true)"
+                        class="bg-sky-100 text-primary_dark hover:bg-sky-200 font-bold px-3 py-2 rounded-xl text-xs">
+                        🔄 Resynchroniser les nuages
                     </button>
                     <button onclick="exportCSV()"
-                        class="bg-emerald-100 text-emerald-800 hover:bg-emerald-200 font-bold px-3.5 py-2 rounded-xl text-xs transition-colors">
-                        📥 Exporter l'onglet (.csv)
+                        class="bg-emerald-100 text-emerald-800 hover:bg-emerald-200 font-bold px-3 py-2 rounded-xl text-xs">
+                        📥 Exporter (.csv)
                     </button>
                     <button onclick="closeAdminDashboard()"
-                        class="bg-slate-200 text-slate-700 hover:bg-slate-300 font-bold px-4 py-2 rounded-xl text-xs transition-colors">
-                        Déconnexion
+                        class="bg-slate-200 text-slate-700 hover:bg-slate-300 font-bold px-3.5 py-2 rounded-xl text-xs">
+                        Fermer
                     </button>
                 </div>
             </div>
 
-            <!-- Onglets Admin -->
             <div class="flex border-b border-slate-200 px-5 bg-white">
                 <button onclick="switchAdminTab('reponses')" id="tab-reponses"
                     class="px-4 py-3 border-b-2 border-primary text-primary font-bold text-sm">
-                    Participations & Textes libres (<span id="count-admin-rep">0</span>)
+                    Participations des élus (<span id="count-admin-rep">0</span>)
                 </button>
                 <button onclick="switchAdminTab('idees')" id="tab-idees"
                     class="px-4 py-3 border-b-2 border-transparent text-slate-500 font-semibold hover:text-slate-800 text-sm">
-                    Nuages de Mots & Votes (<span id="count-admin-idees">0</span>)
+                    Nuages de Mots (<span id="count-admin-idees">0</span>)
                 </button>
             </div>
 
-            <!-- Contenu des tables Admin -->
             <div class="flex-grow overflow-auto p-4 sm:p-6 bg-slate-50/50">
-                <!-- Table Réponses -->
                 <div id="admin-view-reponses">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="text-xs font-bold text-slate-500 uppercase border-b border-slate-200">
-                                <th class="pb-3 px-2">Date/Heure</th>
+                                <th class="pb-3 px-2">Date</th>
                                 <th class="pb-3 px-2">Élu (Commune)</th>
                                 <th class="pb-3 px-2">Axe</th>
-                                <th class="pb-3 px-2">Votes Nuages</th>
-                                <th class="pb-3 px-2">Expression Libre</th>
+                                <th class="pb-3 px-2">Votes Nuages associés</th>
+                                <th class="pb-3 px-2">Texte libre</th>
                                 <th class="pb-3 px-2 text-right">Actions</th>
                             </tr>
                         </thead>
@@ -911,12 +739,11 @@
                     </table>
                 </div>
 
-                <!-- Table Idées -->
                 <div id="admin-view-idees" class="hidden">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="text-xs font-bold text-slate-500 uppercase border-b border-slate-200">
-                                <th class="pb-3 px-2">Axe & Question</th>
+                                <th class="pb-3 px-2">Axe & Nuage</th>
                                 <th class="pb-3 px-2">Mot / Idée</th>
                                 <th class="pb-3 px-2">Votes</th>
                                 <th class="pb-3 px-2 text-right">Actions</th>
@@ -929,22 +756,21 @@
         </div>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- LOGIQUE JAVASCRIPT & INTÉGRATION SUPABASE                 -->
-    <!-- ========================================================= -->
     <script>
-        // --- CONFIGURATION SUPABASE & TABLES DÉDIÉES ---
+        // =====================================================================
+        // CONFIGURATION SUPABASE & PERSISTANCE LOCALSTORAGE
+        // =====================================================================
         const SUPABASE_URL = 'https://bnloivgpihtsxydjkgyc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJubG9pdmdwaWh0c3h5ZGprZ3ljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MDY4MjIsImV4cCI6MjA4Njk4MjgyMn0.U1p2xnYLprSO8-w-6mlG9BMO4_-A916XGmsKQ5WkdEg';
         const TABLE_REPONSES = 'table_elus_commission_08102026_reponses';
         const TABLE_IDEES = 'table_elus_commission_08102026_idees';
         const RPC_VOTER = 'voter_idee_commission_08102026';
         const APP_URL = 'https://ccmvr.github.io/CTG-Commission-08102026/';
+        const STORAGE_KEY = 'ccmvr_commission_08102026_state_v2';
         const MAX_VOTES_PER_CLOUD = 5;
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // --- LES 14 COMMUNES DE LA CCMVR ---
         const COMMUNES_CCMVR = [
             "Monistrol-sur-Loire", "Sainte-Sigolène", "Bas-en-Basset", "Beauzac",
             "Saint-Pal-de-Mons", "Les Villettes", "La Séauve-sur-Semène", "Saint-Didier-en-Velay",
@@ -952,26 +778,24 @@
             "Solignac-sous-Roche", "Saint-André-de-Chalencon"
         ];
 
-        // --- ARCHITECTURE FUSIONNÉE : PLAN DE MANDAT × CTG 2027-2031 ---
         const AXES_CONFIG = {
             'axe1': {
                 key: 'axe1',
-                shortTitle: '1. Adapter aux besoins',
-                title: 'Axe 1 : Adapter nos services aux besoins des habitants',
-                mandatBadge: 'Notre ambition : Veiller au bien-être de la population',
+                shortTitle: 'Adapter nos services',
+                subLabel: 'Besoins habitants',
+                title: '1. Adapter nos services aux besoins des habitants',
                 icon: '🔄',
-                colorClass: 'border-sky-500 text-sky-700',
                 constats: [
-                    '👶 <strong>Petite Enfance (0-6 ans)</strong> : 15 structures, +11,8 % d\'heures mais <strong>66 % de taux d\'occupation</strong> et baisse de la natalité (7,5 ‰). Déploiement du SPPE.',
-                    '🎒 <strong>Enfance (3-11 ans)</strong> : 19 accueils péri/extrascolaires stables globalement, mais disparités locales et enjeux d\'<strong>accueil inclusif (handicap)</strong>.',
-                    '🛹 <strong>Jeunesse (11-17 ans)</strong> : <strong>Baisse de -41 % des heures d\'accueil ados</strong> (46 299 h → 27 120 h) : modèle d\'intervention à réinventer.',
-                    '👨‍👩‍👧 <strong>Parentalité & Solidarités</strong> : Observatoire créé en 2025, reprise du CLAS au 1er oct., réflexion sur un Lieu Ressource / LAEP.'
+                    '👶 <strong>Petite Enfance</strong> : +11,8 % d\'heures mais <strong>66 % d\'occupation</strong> & natalité à 7,5 ‰ (SPPE).',
+                    '🎒 <strong>Enfance (3-11 ans)</strong> : 19 ALSH stables, enjeux d\'<strong>inclusion (handicap)</strong>.',
+                    '🛹 <strong>Jeunesse (11-17 ans)</strong> : <strong>-41 % d\'heures d\'accueil ados</strong> → offre à réinventer.',
+                    '👨‍👩‍👧 <strong>Parentalité & Solidarités</strong> : Observatoire 2025, CLAS repris au 1er oct., réflexion LAEP.'
                 ],
                 clouds: [
                     {
                         id: 'axe1_q1',
                         stepLabel: 'Nuage 1/2 • Préserver & Prioriser',
-                        question: 'Au regard des besoins des familles et de nos moyens, que devons-nous absolument <span class="text-primary underline">PRÉSERVER ou PRIORISER</span> dans nos services (Petite enfance, Enfance, Jeunesse, Solidarités) ?',
+                        question: 'Que devons-nous absolument <span class="text-primary underline">PRÉSERVER ou PRIORISER</span> dans nos services (Petite enfance, Enfance, Jeunesse, Solidarités) ?',
                         seedWords: [
                             'Maillage crèches & ALSH',
                             'Inclusion & accueil handicap',
@@ -986,7 +810,7 @@
                     {
                         id: 'axe1_q2',
                         stepLabel: 'Nuage 2/2 • Adapter & Faire évoluer',
-                        question: 'Qu\'est-ce qui doit <span class="text-primary underline">ÉVOLUER ou ÊTRE ADAPTÉ</span> dans notre offre pour répondre aux réalités actuelles (baisse de la natalité, -41 % de fréquentation ados, horaires...) ?',
+                        question: 'Qu\'est-ce qui doit <span class="text-primary underline">ÉVOLUER ou ÊTRE ADAPTÉ</span> face aux réalités actuelles (baisse natalité, -41 % fréquentation ados, horaires...) ?',
                         seedWords: [
                             'Réinventer l\'offre Ados (11-17 ans)',
                             'Ajuster les places à la natalité',
@@ -999,26 +823,24 @@
                         ]
                     }
                 ],
-                freeTextPrompt: 'Vos constats ou précisions sur les besoins des habitants et l\'adaptation de nos services (facultatif) :'
+                freeTextPrompt: 'Vos constats ou précisions sur l\'adaptation des services aux besoins (facultatif) :'
             },
             'axe2': {
                 key: 'axe2',
-                shortTitle: '2. Coopérer & Mutualiser',
-                title: 'Axe 2 : Cultiver les coopérations et les mutualisations',
-                mandatBadge: 'Notre conviction : Se mobiliser sur la cohésion & Gérer avec rigueur',
+                shortTitle: 'Coopérer & Mutualiser',
+                subLabel: 'Communes & Assos',
+                title: '2. Cultiver les coopérations et les mutualisations',
                 icon: '🤝',
-                colorClass: 'border-indigo-500 text-indigo-700',
                 constats: [
-                    '🏛️ <strong>Fragilité associative</strong> : Plusieurs structures Enfance-Jeunesse reposent sur des bureaux associatifs bénévoles fragilisés (rencontre du 7 oct., élus référents).',
-                    '🔗 <strong>Dynamiques installées</strong> : Réseau trimestriel des directeurs ALSH, Référent Jeunesse (0,5 ETP), malle inclusion mutualisée.',
-                    '💶 <strong>Levier financier</strong> : <strong>2,66 M€ de financements CAF</strong> sur la CCMVR en 2025, nécessité de maîtriser nos coûts de fonctionnement.',
-                    '⚖️ <strong>Compétences</strong> : Rechercher la complémentarité avec les communes et partenaires sans déresponsabiliser.'
+                    '🏛️ <strong>Fragilité associative</strong> : Bureaux bénévoles fragilisés (rencontre du 7 oct., élus référents).',
+                    '🔗 <strong>Réseaux acquis</strong> : Réseau directeurs ALSH, Référent Jeunesse (0,5 ETP), malle inclusion.',
+                    '💶 <strong>Finances</strong> : <strong>2,66 M€ de soutien CAF</strong> en 2025, maîtrise nécessaire des charges CCMVR.'
                 ],
                 clouds: [
                     {
                         id: 'axe2_q1',
-                        stepLabel: 'Nuage 1/2 • Mutualiser à l\'échelle CCMVR',
-                        question: 'Quels services, fonctions ou moyens gagneraient à être davantage <span class="text-primary underline">COORDONNÉS ou MUTUALISÉS</span> à l\'échelle communautaire pour gagner en efficacité tout en maîtrisant les coûts ?',
+                        stepLabel: 'Nuage 1/2 • Mutualiser (échelle CCMVR)',
+                        question: 'Quels services ou moyens gagneraient à être davantage <span class="text-primary underline">COORDONNÉS ou MUTUALISÉS</span> à l\'échelle communautaire ?',
                         seedWords: [
                             'Appui administratif & RH aux assos',
                             'Mutualisation matériel & minibus',
@@ -1033,7 +855,7 @@
                     {
                         id: 'axe2_q2',
                         stepLabel: 'Nuage 2/2 • Mieux faire ensemble',
-                        question: 'Que pourrait-on <span class="text-primary underline">MIEUX FAIRE COLLECTIVEMENT</span> avec les communes, les associations et les partenaires, plutôt que chacun de son côté ?',
+                        question: 'Que pourrait-on <span class="text-primary underline">MIEUX FAIRE COLLECTIVEMENT</span> (CCMVR, communes, associations, partenaires) ?',
                         seedWords: [
                             'Soutenir les bureaux associatifs',
                             'Rôle actif des élus référents',
@@ -1046,26 +868,23 @@
                         ]
                     }
                 ],
-                freeTextPrompt: 'Vos pistes concrètes de mutualisation ou de coopération (avec qui, sous quelle forme ?) (facultatif) :'
+                freeTextPrompt: 'Vos pistes concrètes de mutualisation ou de coopération (facultatif) :'
             },
             'axe3': {
                 key: 'axe3',
-                shortTitle: '3. Avenir des bourgs',
-                title: 'Axe 3 : Agir pour l\'avenir et la vitalité des bourgs',
-                mandatBadge: 'Notre ambition : Promouvoir le développement du territoire',
+                shortTitle: 'Avenir des bourgs',
+                subLabel: 'Vitalité & Proximité',
+                title: '3. Agir pour l\'avenir et la vitalité des bourgs',
                 icon: '🏘️',
-                colorClass: 'border-amber-500 text-amber-700',
                 constats: [
-                    '🏡 <strong>Attractivité résidentielle</strong> : Les services aux familles (garde d\'enfants, périscolaire, loisirs) sont décisifs pour l\'installation des jeunes ménages dans nos bourgs.',
-                    '🚌 <strong>Mobilité & Proximité</strong> : Défi d\'accès aux équipements et aux loisirs pour les jeunes et familles des communes rurales.',
-                    '⚖️ <strong>Équité territoriale</strong> : Veiller à un maillage équilibré entre pôles structurants et actions de proximité dans les villages.',
-                    '🤝 <strong>Vitalité locale</strong> : Lien étroit entre maintien des écoles, vie associative locale et dynamisme des centres-bourgs.'
+                    '🏡 <strong>Attractivité</strong> : Modes de garde, périscolaire et loisirs conditionnent l\'installation des familles.',
+                    '🚌 <strong>Équité & Mobilité</strong> : Accès aux services pour les familles et jeunes des communes rurales.'
                 ],
                 clouds: [
                     {
                         id: 'axe3_q1',
                         stepLabel: 'Nuage 1/2 • Services essentiels des bourgs',
-                        question: 'Quels services ou équipements sont les plus <span class="text-primary underline">ESSENTIELS</span> pour permettre aux familles, aux enfants et aux jeunes de s\'installer, vivre et faire vivre nos bourgs ?',
+                        question: 'Quels services sont les plus <span class="text-primary underline">ESSENTIELS</span> pour permettre aux familles et aux jeunes de vivre et s\'installer dans nos bourgs ?',
                         seedWords: [
                             'Périscolaire & cantine de proximité',
                             'Solutions de garde (Crèches, MAM, Assmat)',
@@ -1080,7 +899,7 @@
                     {
                         id: 'axe3_q2',
                         stepLabel: 'Nuage 2/2 • Équilibre entre communes',
-                        question: 'Face aux évolutions démographiques, quelles adaptations permettent de soutenir <span class="text-primary underline">l\'équité et la vitalité de TOUTES les communes</span> du territoire ?',
+                        question: 'Quelles adaptations permettent de soutenir <span class="text-primary underline">l\'équité et la vitalité de TOUTES les communes</span> ?',
                         seedWords: [
                             'Services itinérants (RPE, ludothèque, LAEP)',
                             'Soutenir l\'installation d\'Assmat / MAM',
@@ -1092,26 +911,23 @@
                         ]
                     }
                 ],
-                freeTextPrompt: 'Votre regard sur le rôle des services aux familles dans l\'attractivité de nos bourgs (facultatif) :'
+                freeTextPrompt: 'Votre regard sur le rôle des services aux familles dans la vitalité des bourgs (facultatif) :'
             },
             'axe4': {
                 key: 'axe4',
-                shortTitle: '4. Appartenance CC',
-                title: 'Axe 4 : Développer culture et sentiment d\'appartenance communautaires',
-                mandatBadge: 'Notre conviction : Cohésion du territoire & Gouvernance partagée',
+                shortTitle: 'Appartenance CC',
+                subLabel: 'Visibilité & Cohésion',
+                title: '4. Développer culture et sentiment d\'appartenance communautaires',
                 icon: '💬',
-                colorClass: 'border-emerald-500 text-emerald-700',
                 constats: [
-                    '📣 <strong>Lisibilité de la « Com Com »</strong> : Le séminaire du 18 septembre a mis en évidence le besoin de mieux faire connaître l\'action communautaire aux habitants.',
-                    '🎭 <strong>Temps forts fédérateurs</strong> : Semaine Bleue (5-11 oct.), Théâtre-Forum Parentalité (15 oct.), Guichet Unique Petite Enfance.',
-                    '📊 <strong>Observation partagée</strong> : Nouvel Observatoire Enfance-Jeunesse-Parentalité pour éclairer les communes et partenaires.',
-                    '🤝 <strong>Lien Élus / Terrain</strong> : Désignation des élus référents auprès des associations Enfance-Jeunesse.'
+                    '📣 <strong>Visibilité</strong> : Mieux faire identifier ce qui est porté par la CCMVR aux habitants.',
+                    '🎭 <strong>Temps forts</strong> : Semaine Bleue, Théâtre-Forum Parentalité, Guichet Unique, Observatoire.'
                 ],
                 clouds: [
                     {
                         id: 'axe4_q1',
-                        stepLabel: 'Nuage 1/2 • Visibilité auprès des habitants',
-                        question: 'Que pourrait faire concrètement la CCMVR pour que les habitants et les communes <span class="text-primary underline">IDENTIFIENT DAVANTAGE</span> ce qui est porté à l\'échelle communautaire ?',
+                        stepLabel: 'Nuage 1/2 • Visibilité habitants',
+                        question: 'Que faire pour que les habitants <span class="text-primary underline">IDENTIFIENT DAVANTAGE</span> ce qui est porté à l\'échelle communautaire ?',
                         seedWords: [
                             'Temps forts fédérateurs (Semaine Bleue...)',
                             'Guide / Portail unique des services Familles',
@@ -1125,7 +941,7 @@
                     {
                         id: 'axe4_q2',
                         stepLabel: 'Nuage 2/2 • Lien Communes & CCMVR',
-                        question: 'Quelle pratique renforcerait le mieux le <span class="text-primary underline">travail en commun et le sentiment d\'appartenance</span> entre les mairies, les associations et la CCMVR ?',
+                        question: 'Quelle pratique renforcerait le mieux le <span class="text-primary underline">sentiment d\'appartenance</span> entre les communes et la CCMVR ?',
                         seedWords: [
                             'Relais dans les bulletins municipaux',
                             'Temps annuel de bilan & convivialité',
@@ -1137,25 +953,23 @@
                         ]
                     }
                 ],
-                freeTextPrompt: 'Vos suggestions pour renforcer la visibilité et l\'esprit communautaire (facultatif) :'
+                freeTextPrompt: 'Vos suggestions pour renforcer l\'esprit communautaire (facultatif) :'
             },
             'cap_ctg': {
                 key: 'cap_ctg',
                 shortTitle: 'Cap CTG 2027-2031',
+                subLabel: 'Nos priorités',
                 title: '🎯 Le Cap Politique de la Future CTG 2027–2031',
-                mandatBadge: 'Synthèse Stratégique • Choisir nos priorités pour les 6 prochaines années',
                 icon: '🎯',
-                colorClass: 'border-primary text-primary_dark',
                 constats: [
-                    '🎯 <strong>Une CTG de choix, pas de simple reconduction</strong> : Déterminer ce que la CCMVR souhaite préserver, adapter ou développer d\'ici 2031.',
-                    '⚖️ <strong>Notre exigence</strong> : Se recentrer sur nos compétences statutaires, assumer une gestion rigoureuse et prioriser.',
-                    '📅 <strong>Calendrier</strong> : Ateliers en octobre-novembre → Validation du plan d\'action au 2ème COPIL le <strong>5 novembre 2026</strong> → Signature fin 2026.'
+                    '🎯 <strong>Cap 2027-2031</strong> : Prioriser nos actions dans le respect de nos compétences et de nos capacités financières.',
+                    '📅 <strong>Prochaine étape</strong> : Validation du plan d\'action au 2ème COPIL le 5 novembre 2026.'
                 ],
                 clouds: [
                     {
                         id: 'cap_ctg_q1',
                         stepLabel: 'Nuage Central • Les grandes priorités du mandat',
-                        question: 'Si vous ne deviez retenir que <span class="text-primary underline">les priorités majeures (jusqu\'à 5 choix)</span> pour la CTG 2027–2031 dans le champ de compétence de la CCMVR, lesquelles choisiriez-vous ?',
+                        question: 'Quelles sont vos <span class="text-primary underline">grandes priorités politiques (jusqu\'à 5 choix)</span> pour la CTG 2027–2031 ?',
                         seedWords: [
                             'Consolider et pérenniser l\'offre existante',
                             'Refonder la politique Jeunesse (11-17 ans)',
@@ -1168,24 +982,25 @@
                         ]
                     }
                 ],
-                freeTextPrompt: 'En une phrase : qu\'aimeriez-vous que la future CTG 2027–2031 permette d\'améliorer concrètement pour les habitants du territoire ?'
+                freeTextPrompt: 'En une phrase : qu\'aimeriez-vous que la future CTG permette d\'améliorer concrètement pour les habitants ?'
             }
         };
 
         const PERIPHERAL_KEYS = ['axe1', 'axe2', 'axe3', 'axe4'];
 
-        // --- ÉTAT DE L'APPLICATION ---
+        // --- ÉTAT PERSISTÉ DANS LOCALSTORAGE ---
         var wordCloudDB = {};
         var state = {
+            activeStepId: 'step-accueil',
             structureName: '',
             communeName: '',
             completedThemes: [],
             currentAxeKey: null,
-            currentCloudStepIndex: 0, // 0 ou 1 selon le nuage de l'axe
-            selectedVotesByCloud: {}, // { 'axe1_q1': ['...', '...'] }
+            currentCloudStepIndex: 0,
+            selectedVotesByCloud: {},
+            customWordsByCloud: {},
             freeTextByAxe: {},
             sortByVotes: false,
-            constatsExpanded: true,
             liveActiveTab: 'all'
         };
 
@@ -1194,15 +1009,91 @@
         var currentAdminTab = 'reponses';
         var liveRefreshInterval = null;
 
+        // Sauvegarde automatique dans localStorage
+        function saveStateToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                updateHeaderBadges();
+            } catch (e) {
+                console.warn("Erreur écriture localStorage:", e);
+            }
+        }
+
+        // Restauration automatique au chargement / rafraîchissement
+        function loadStateFromStorage() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return false;
+                const parsed = JSON.parse(raw);
+                if (parsed && typeof parsed === 'object') {
+                    state = Object.assign(state, parsed);
+                    return true;
+                }
+            } catch (e) {
+                console.warn("Erreur lecture localStorage:", e);
+            }
+            return false;
+        }
+
+        function resetCurrentParticipantSession() {
+            if (!confirm("Voulez-vous démarrer une nouvelle participation (effacer la session locale sur cet appareil) ?")) return;
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
+        }
+
+        function updateHeaderBadges() {
+            document.getElementById('completed-count').textContent = state.completedThemes.length;
+            const userBadge = document.getElementById('header-user-badge');
+            if (state.structureName) {
+                userBadge.textContent = `${state.structureName}${state.communeName ? ' • ' + state.communeName : ''}`;
+            } else {
+                userBadge.textContent = 'Plan de Mandat & CTG';
+            }
+            const startLabel = document.getElementById('btn-start-label');
+            if (startLabel) {
+                startLabel.textContent = state.structureName
+                    ? `Reprendre (${state.structureName})`
+                    : "Commencer l'échange";
+            }
+        }
+
         // --- INITIALISATION AU CHARGEMENT ---
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             renderQrCodes();
+            const restored = loadStateFromStorage();
+
+            // Pré-remplir les champs d'identification si restaurés
+            if (state.structureName) {
+                document.getElementById('structure_name').value = state.structureName;
+            }
+            if (state.communeName) {
+                document.getElementById('commune_name').value = state.communeName;
+                const badge = document.getElementById('selected-commune-badge');
+                badge.textContent = '✓ ' + state.communeName;
+                badge.classList.remove('hidden');
+            }
             renderCommunesChips();
-            // Sur mobile, replier par défaut les constats après le 1er affichage si petit écran
-            if (window.innerWidth < 640) {
-                state.constatsExpanded = false;
+            updateHeaderBadges();
+
+            // Si l'utilisateur a rafraîchi la page pendant le sondage, le remettre exactement là où il était !
+            if (restored && state.activeStepId && state.activeStepId !== 'step-accueil') {
+                if (state.activeStepId === 'step-cloud' && state.currentAxeKey) {
+                    await loadCloudStep(state.currentCloudStepIndex || 0);
+                } else if (state.activeStepId === 'step-free-text' && state.currentAxeKey) {
+                    openFreeTextStep();
+                } else {
+                    goToStep(state.activeStepId);
+                }
             }
         });
+
+        function startOrResumeSurvey() {
+            if (state.structureName) {
+                goToStep('step-themes');
+            } else {
+                goToStep('step-identification');
+            }
+        }
 
         function renderQrCodes() {
             ['qrcode-home', 'qrcode-fullscreen'].forEach((containerId, idx) => {
@@ -1237,7 +1128,7 @@
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 const isSelected = state.communeName === commune;
-                btn.className = `px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
+                btn.className = `px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                     isSelected
                         ? 'bg-primary text-white border-primary shadow-sm scale-[1.02]'
                         : 'bg-slate-50 hover:bg-sky-50 text-slate-700 border-slate-200'
@@ -1253,6 +1144,7 @@
                     } else {
                         badge.classList.add('hidden');
                     }
+                    saveStateToStorage();
                     renderCommunesChips();
                 };
                 container.appendChild(btn);
@@ -1261,12 +1153,15 @@
 
         // --- NAVIGATION ENTRE ÉTAPES ---
         function goToStep(stepId) {
+            state.activeStepId = stepId;
+            saveStateToStorage();
+
             document.querySelectorAll('.step').forEach(el => {
                 if (el.id !== stepId) {
                     el.classList.remove('active');
                     setTimeout(() => {
                         if (!el.classList.contains('active')) el.style.display = 'none';
-                    }, 280);
+                    }, 250);
                 }
             });
 
@@ -1295,6 +1190,7 @@
             }
             input.classList.remove('border-red-500');
             state.structureName = val;
+            saveStateToStorage();
             goToStep('step-themes');
         }
 
@@ -1303,163 +1199,135 @@
             toast.textContent = msg;
             toast.classList.remove('hidden');
             clearTimeout(window._toastTimer);
-            window._toastTimer = setTimeout(() => toast.classList.add('hidden'), 3400);
+            window._toastTimer = setTimeout(() => toast.classList.add('hidden'), 3200);
         }
 
-        // --- RENDU DE LA ROUE DES AXES (DESKTOP) & DES CARTES TACTILES (MOBILE + DESKTOP) ---
+        // =====================================================================
+        // RENDU DE LA ROUE VISUELLE (4 AXES AUX COINS + CAP CTG AU CENTRE)
+        // =====================================================================
         function initThemesUI() {
-            document.getElementById('completed-count').textContent = state.completedThemes.length;
-
-            // 1. Roue Radiale (Tablette / Grand Écran)
+            updateHeaderBadges();
             const circleContainer = document.getElementById('theme-circle');
-            if (circleContainer) {
-                circleContainer.innerHTML = '';
-                let svgHtml = '<svg class="svg-lines" viewBox="0 0 540 540">';
-                const totalNodes = PERIPHERAL_KEYS.length;
-                const radius = 190;
-                const centerPos = { x: 270, y: 270 };
+            if (!circleContainer) return;
+            circleContainer.innerHTML = '';
 
-                // Angles à -45°, 45°, 135°, 225° pour une disposition en X équilibrée autour du centre
-                PERIPHERAL_KEYS.forEach((key, index) => {
-                    const angleDeg = -45 + (index * 90);
-                    const angle = angleDeg * (Math.PI / 180);
-                    const x = centerPos.x + radius * Math.cos(angle);
-                    const y = centerPos.y + radius * Math.sin(angle);
-                    svgHtml += `<line x1="270" y1="270" x2="${x}" y2="${y}" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="6,6" />`;
-                });
-                svgHtml += '</svg>';
-                circleContainer.innerHTML += svgHtml;
+            let svgHtml = '<svg class="svg-lines" viewBox="0 0 500 500">';
+            const radius = 175;
+            const centerPos = { x: 250, y: 250 };
 
-                // Nœud Central : Cap CTG 2027-2031
-                const isCenterDone = state.completedThemes.includes('cap_ctg');
-                const centerNode = document.createElement('div');
-                centerNode.className = `theme-node theme-node-center ${isCenterDone ? 'completed' : ''}`;
-                centerNode.style.left = '50%';
-                centerNode.style.top = '50%';
-                centerNode.innerHTML = `
-                    <div class="text-3xl mb-1">🎯</div>
-                    <div class="text-xs font-extrabold leading-tight px-1">LE CAP CTG<br>2027–2031</div>
-                    <div class="text-[10px] font-semibold opacity-85 mt-1">${isCenterDone ? '✓ Complété' : '3 Priorités & Cap'}</div>
+            // Disposition aux 4 coins (-135°, -45°, 45°, 135°)
+            const anglesDeg = [-135, -45, 135, 45];
+            PERIPHERAL_KEYS.forEach((key, index) => {
+                const angle = anglesDeg[index] * (Math.PI / 180);
+                const x = centerPos.x + radius * Math.cos(angle);
+                const y = centerPos.y + radius * Math.sin(angle);
+                svgHtml += `<line x1="250" y1="250" x2="${x}" y2="${y}" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="6,6" />`;
+            });
+            svgHtml += '</svg>';
+            circleContainer.innerHTML += svgHtml;
+
+            // Nœud Central : Cap CTG 2027-2031
+            const isCenterDone = state.completedThemes.includes('cap_ctg');
+            const centerNode = document.createElement('div');
+            centerNode.className = `theme-node theme-node-center ${isCenterDone ? 'completed' : ''}`;
+            centerNode.style.left = '50%';
+            centerNode.style.top = '50%';
+            centerNode.innerHTML = `
+                <div class="node-icon text-3xl mb-1">🎯</div>
+                <div class="node-title text-xs sm:text-sm font-extrabold leading-tight px-1">CAP CTG<br>2027–2031</div>
+                <div class="node-sub text-[10px] font-semibold opacity-90 mt-1">${isCenterDone ? '✓ Validé' : 'Nos priorités'}</div>
+            `;
+            centerNode.onclick = () => {
+                if (isCenterDone) {
+                    showToast("✓ Vous avez déjà validé le Cap CTG (vos votes sont enregistrés).");
+                    return;
+                }
+                startAxe('cap_ctg');
+            };
+            circleContainer.appendChild(centerNode);
+
+            // 4 Bulles Périphériques : Les 4 Axes du Plan de Mandat
+            PERIPHERAL_KEYS.forEach((key, index) => {
+                const angle = anglesDeg[index] * (Math.PI / 180);
+                const x = centerPos.x + radius * Math.cos(angle);
+                const y = centerPos.y + radius * Math.sin(angle);
+                const isDone = state.completedThemes.includes(key);
+                const cfg = AXES_CONFIG[key];
+
+                const node = document.createElement('div');
+                node.className = `theme-node border-2 ${isDone ? 'completed' : 'border-slate-200'}`;
+                node.style.left = `${(x / 500) * 100}%`;
+                node.style.top = `${(y / 500) * 100}%`;
+                node.innerHTML = `
+                    <div class="node-icon text-2xl sm:text-3xl mb-1">${cfg.icon}</div>
+                    <div class="node-title text-xs font-extrabold leading-tight text-slate-800 px-1">${cfg.shortTitle}</div>
+                    <div class="node-sub text-[10px] text-slate-500 mt-0.5">${isDone ? '✓ Validé' : cfg.subLabel}</div>
+                    ${isDone ? '<div class="absolute -top-1 -right-1 bg-emerald-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow">✓</div>' : ''}
                 `;
-                centerNode.onclick = () => startAxe('cap_ctg');
-                circleContainer.appendChild(centerNode);
-
-                // 4 Nœuds Périphériques : Les 4 Axes du Plan de Mandat
-                PERIPHERAL_KEYS.forEach((key, index) => {
-                    const angleDeg = -45 + (index * 90);
-                    const angle = angleDeg * (Math.PI / 180);
-                    const x = centerPos.x + radius * Math.cos(angle);
-                    const y = centerPos.y + radius * Math.sin(angle);
-                    const isDone = state.completedThemes.includes(key);
-                    const cfg = AXES_CONFIG[key];
-
-                    const node = document.createElement('div');
-                    node.className = `theme-node border-3 ${isDone ? 'completed' : 'border-slate-200 hover:border-primary'}`;
-                    node.style.left = `${(x / 540) * 100}%`;
-                    node.style.top = `${(y / 540) * 100}%`;
-                    node.innerHTML = `
-                        <div class="text-2xl mb-1">${cfg.icon}</div>
-                        <div class="text-xs font-extrabold leading-tight text-slate-800 px-1">${cfg.shortTitle}</div>
-                        <div class="text-[10px] text-slate-500 mt-0.5">${isDone ? '✓ Modifiable' : '2 nuages + avis'}</div>
-                        ${isDone ? '<div class="absolute -top-1.5 -right-1.5 bg-emerald-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow">✓</div>' : ''}
-                    `;
-                    node.onclick = () => startAxe(key);
-                    circleContainer.appendChild(node);
-                });
-            }
-
-            // 2. Cartes Tactiles Modernes (Idéal sur Smartphone et en liste claire)
-            const cardsContainer = document.getElementById('theme-cards-mobile');
-            if (cardsContainer) {
-                cardsContainer.innerHTML = '';
-                const orderedKeys = ['axe1', 'axe2', 'axe3', 'axe4', 'cap_ctg'];
-                orderedKeys.forEach(key => {
-                    const cfg = AXES_CONFIG[key];
-                    const isDone = state.completedThemes.includes(key);
-                    const isCenter = key === 'cap_ctg';
-
-                    const card = document.createElement('button');
-                    card.type = 'button';
-                    card.onclick = () => startAxe(key);
-                    card.className = `w-full text-left p-4 sm:p-5 rounded-2xl border-2 transition-all flex items-center justify-between gap-3 group ${
-                        isDone
-                            ? 'bg-emerald-50/70 border-emerald-400 text-emerald-950'
-                            : isCenter
-                                ? 'bg-gradient-to-r from-sky-900 to-slate-900 text-white border-sky-400 shadow-md hover:shadow-lg'
-                                : 'bg-white hover:bg-sky-50/50 border-slate-200 hover:border-primary shadow-sm'
-                    }`;
-
-                    card.innerHTML = `
-                        <div class="flex items-start sm:items-center gap-3.5 min-w-0">
-                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 ${
-                                isDone ? 'bg-emerald-200/70' : isCenter ? 'bg-white/15' : 'bg-slate-100 group-hover:bg-sky-100'
-                            }">
-                                ${cfg.icon}
-                            </div>
-                            <div class="min-w-0">
-                                <div class="text-[11px] font-bold uppercase tracking-wider ${
-                                    isDone ? 'text-emerald-700' : isCenter ? 'text-sky-300' : 'text-primary'
-                                }">
-                                    ${cfg.mandatBadge}
-                                </div>
-                                <div class="font-extrabold text-sm sm:text-base leading-snug truncate">
-                                    ${cfg.title}
-                                </div>
-                                <div class="text-xs mt-0.5 ${
-                                    isDone ? 'text-emerald-700 font-semibold' : isCenter ? 'text-slate-300' : 'text-slate-500'
-                                }">
-                                    ${isDone ? '✓ Axe enregistré (touchez pour compléter ou revoir)' : `${cfg.clouds.length} nuage(s) de mots (5 votes max) + expression libre`}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="shrink-0">
-                            <span class="inline-flex items-center justify-center px-3.5 py-2 rounded-xl font-bold text-xs ${
-                                isDone
-                                    ? 'bg-emerald-600 text-white'
-                                    : isCenter
-                                        ? 'bg-sky-400 text-slate-950'
-                                        : 'bg-slate-900 group-hover:bg-primary text-white'
-                            }">
-                                ${isDone ? '✓ Fait' : 'Ouvrir →'}
-                            </span>
-                        </div>
-                    `;
-                    cardsContainer.appendChild(card);
-                });
-            }
+                node.onclick = () => {
+                    if (isDone) {
+                        showToast(`✓ L'axe « ${cfg.shortTitle} » a déjà été validé.`);
+                        return;
+                    }
+                    startAxe(key);
+                };
+                circleContainer.appendChild(node);
+            });
         }
 
         // --- DÉMARRAGE D'UN AXE ---
         function startAxe(axeKey) {
             state.currentAxeKey = axeKey;
             state.currentCloudStepIndex = 0;
+            saveStateToStorage();
             loadCloudStep(0);
         }
 
-        function renderConstatsBox(axeCfg) {
-            const box = document.getElementById('constats-box-content');
-            const label = document.getElementById('constats-toggle-label');
-            if (!box) return;
-            box.innerHTML = axeCfg.constats.map(c => `
-                <div class="bg-white/80 p-2.5 rounded-xl border border-amber-200/70 leading-snug">${c}</div>
-            `).join('');
-
-            if (state.constatsExpanded) {
-                box.classList.remove('hidden');
-                label.textContent = 'Masquer ▲';
-            } else {
-                box.classList.add('hidden');
-                label.textContent = 'Afficher ▼';
-            }
-        }
-
         function toggleConstatsBox() {
-            state.constatsExpanded = !state.constatsExpanded;
-            const axeCfg = AXES_CONFIG[state.currentAxeKey];
-            if (axeCfg) renderConstatsBox(axeCfg);
+            const box = document.getElementById('constats-box-content');
+            if (box) box.classList.toggle('hidden');
         }
 
-        // --- CHARGEMENT D'UNE ÉTAPE NUAGE DE MOTS ---
+        // =====================================================================
+        // CALCUL DYNAMIQUE DES VOTES DEPUIS LES RÉPONSES ACTIVES
+        // Garantit à 100 % que :
+        // 1) Aucun vote en cours de route (page rafraîchie) n'est compté en double
+        // 2) Toute ligne supprimée dans l'Admin supprime immédiatement ses votes !
+        // =====================================================================
+        async function fetchAccurateCloudCounts(dbThemeKey, axeKey, cloudIndex, seedWords) {
+            const counts = {};
+            seedWords.forEach(w => { counts[w] = 1; });
+
+            try {
+                // Lire les réponses actives de cet axe
+                const { data: repData, error: repErr } = await supabaseClient
+                    .from(TABLE_REPONSES)
+                    .select('votes_q1, votes_q2')
+                    .eq('theme', axeKey);
+
+                if (!repErr && repData) {
+                    const colName = cloudIndex === 0 ? 'votes_q1' : 'votes_q2';
+                    repData.forEach(row => {
+                        const rawVotes = row[colName] || '';
+                        rawVotes.split('|').map(s => s.trim()).filter(Boolean).forEach(word => {
+                            if (counts[word] === undefined) counts[word] = 0;
+                            counts[word] += 1;
+                        });
+                    });
+                }
+            } catch (e) {
+                console.warn("Erreur lecture réponses pour calcul nuage:", e);
+            }
+
+            // Ajouter les mots personnalisés ajoutés par l'utilisateur courant dans sa session locale
+            const localCustom = state.customWordsByCloud[dbThemeKey] || [];
+            localCustom.forEach(w => {
+                if (counts[w] === undefined) counts[w] = 0;
+            });
+
+            return counts;
+        }
+
         async function loadCloudStep(cloudIndex) {
             const axeCfg = AXES_CONFIG[state.currentAxeKey];
             if (!axeCfg) return;
@@ -1468,44 +1336,23 @@
             const cloudCfg = axeCfg.clouds[cloudIndex];
             const dbThemeKey = cloudCfg.id;
 
-            // Mettre à jour l'en-tête et les constats
             document.getElementById('cloud-axe-badge').textContent = axeCfg.shortTitle;
             document.getElementById('cloud-step-indicator').textContent = cloudCfg.stepLabel;
             document.getElementById('cloud-question').innerHTML = cloudCfg.question;
-            renderConstatsBox(axeCfg);
 
-            // Initialiser la sélection de l'élu pour ce nuage s'il n'en a pas encore
+            const box = document.getElementById('constats-box-content');
+            box.innerHTML = axeCfg.constats.map(c => `<div class="bg-white/90 p-2 rounded-xl border border-amber-200/70">${c}</div>`).join('');
+
             if (!state.selectedVotesByCloud[dbThemeKey]) {
                 state.selectedVotesByCloud[dbThemeKey] = [];
             }
 
-            // Préparer les mots par défaut + les mots de la base Supabase
-            wordCloudDB[dbThemeKey] = {};
-            cloudCfg.seedWords.forEach(w => {
-                wordCloudDB[dbThemeKey][w] = 1;
-            });
-
-            try {
-                const { data, error } = await supabaseClient
-                    .from(TABLE_IDEES)
-                    .select('mot, votes')
-                    .eq('theme', dbThemeKey);
-
-                if (!error && data && data.length > 0) {
-                    data.forEach(item => {
-                        wordCloudDB[dbThemeKey][item.mot] = item.votes;
-                    });
-                }
-            } catch (err) {
-                console.warn("Mode hors-ligne ou table en attente d'initialisation :", err);
-            }
-
-            // S'assurer que les mots ajoutés localement par l'élu figurent aussi dans le nuage
-            state.selectedVotesByCloud[dbThemeKey].forEach(w => {
-                if (wordCloudDB[dbThemeKey][w] === undefined) {
-                    wordCloudDB[dbThemeKey][w] = 1;
-                }
-            });
+            wordCloudDB[dbThemeKey] = await fetchAccurateCloudCounts(
+                dbThemeKey,
+                state.currentAxeKey,
+                cloudIndex,
+                cloudCfg.seedWords
+            );
 
             renderWordCloud();
             goToStep('step-cloud');
@@ -1514,7 +1361,7 @@
         function toggleCloudSort() {
             state.sortByVotes = !state.sortByVotes;
             const btn = document.getElementById('btn-sort-cloud');
-            btn.textContent = state.sortByVotes ? '🔀 Mélanger le nuage' : '🔥 Trier par votes';
+            btn.textContent = state.sortByVotes ? '🔀 Mélanger' : '🔥 Trier';
             renderWordCloud();
         }
 
@@ -1532,11 +1379,6 @@
             const wordsObj = wordCloudDB[dbThemeKey] || {};
             let wordsArray = Object.entries(wordsObj);
 
-            if (wordsArray.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 italic py-6">Ajoutez la première idée ci-dessous !</p>';
-                return;
-            }
-
             const maxVotes = Math.max(...wordsArray.map(w => w[1]), 1);
             const minVotes = Math.min(...wordsArray.map(w => w[1]), 1);
 
@@ -1550,7 +1392,6 @@
                 const spread = Math.max(maxVotes - minVotes, 1);
                 const ratio = Math.min((effectiveCount - minVotes) / spread, 1);
 
-                // Taille dynamique : plus un mot est voté, plus il ressort visuellement
                 const isMobile = window.innerWidth < 640;
                 const minFont = isMobile ? 0.82 : 0.88;
                 const maxExtra = isMobile ? 0.42 : 0.65;
@@ -1590,13 +1431,14 @@
                 selectedVotes = selectedVotes.filter(w => w !== word);
             } else {
                 if (selectedVotes.length >= MAX_VOTES_PER_CLOUD) {
-                    showToast(`⚠️ Vous pouvez voter pour ${MAX_VOTES_PER_CLOUD} idées maximum par nuage.`);
+                    showToast(`⚠️ Maximum ${MAX_VOTES_PER_CLOUD} votes par nuage de mots.`);
                     return;
                 }
                 selectedVotes.push(word);
             }
 
             state.selectedVotesByCloud[dbThemeKey] = selectedVotes;
+            saveStateToStorage();
             renderWordCloud();
         }
 
@@ -1604,7 +1446,7 @@
             const input = document.getElementById('new_idea_input');
             const raw = input.value.trim();
             if (!raw) {
-                showToast("⚠️ Écrivez d'abord votre idée dans le champ.");
+                showToast("⚠️ Écrivez d'abord votre idée.");
                 input.focus();
                 return;
             }
@@ -1619,10 +1461,15 @@
                 wordCloudDB[dbThemeKey][cleanIdea] = 0;
             }
 
+            if (!state.customWordsByCloud[dbThemeKey]) state.customWordsByCloud[dbThemeKey] = [];
+            if (!state.customWordsByCloud[dbThemeKey].includes(cleanIdea)) {
+                state.customWordsByCloud[dbThemeKey].push(cleanIdea);
+            }
+
             let selectedVotes = state.selectedVotesByCloud[dbThemeKey] || [];
             if (!selectedVotes.includes(cleanIdea)) {
                 if (selectedVotes.length >= MAX_VOTES_PER_CLOUD) {
-                    showToast(`💡 Idée ajoutée au nuage ! Décochez un mot si vous souhaitez voter pour elle (max ${MAX_VOTES_PER_CLOUD}).`);
+                    showToast(`💡 Idée ajoutée ! Décochez un autre mot pour voter pour elle (max ${MAX_VOTES_PER_CLOUD}).`);
                 } else {
                     selectedVotes.push(cleanIdea);
                     state.selectedVotesByCloud[dbThemeKey] = selectedVotes;
@@ -1631,6 +1478,7 @@
             }
 
             input.value = '';
+            saveStateToStorage();
             renderWordCloud();
         }
 
@@ -1642,36 +1490,11 @@
             }
         }
 
-        async function submitCloudAndGo() {
+        // Passage à l'étape suivante sans envoyer les votes en double en cours de route :
+        // Tout est sauvegardé dans localStorage et envoyé une seule fois à la validation de l'axe !
+        function nextFromCloud() {
             const axeCfg = AXES_CONFIG[state.currentAxeKey];
-            const cloudCfg = axeCfg.clouds[state.currentCloudStepIndex];
-            const dbThemeKey = cloudCfg.id;
-            const selectedVotes = state.selectedVotesByCloud[dbThemeKey] || [];
-
-            const btn = document.getElementById('btn-cloud-next');
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<span>Enregistrement des votes...</span>';
-            btn.disabled = true;
-
-            try {
-                // Enregistrer chaque vote dans Supabase via la fonction RPC dédiée
-                for (const word of selectedVotes) {
-                    const { error } = await supabaseClient.rpc(RPC_VOTER, {
-                        p_theme: dbThemeKey,
-                        p_mot: word
-                    });
-                    if (error) {
-                        console.warn("Erreur RPC, tentative upsert direct:", error);
-                    }
-                }
-            } catch (err) {
-                console.error("Erreur lors de l'envoi des votes:", err);
-            } finally {
-                btn.innerHTML = originalHtml;
-                btn.disabled = false;
-            }
-
-            // S'il y a un 2e nuage dans cet axe, y passer ; sinon aller à l'expression libre
+            saveStateToStorage();
             if (state.currentCloudStepIndex + 1 < axeCfg.clouds.length) {
                 loadCloudStep(state.currentCloudStepIndex + 1);
             } else {
@@ -1679,14 +1502,19 @@
             }
         }
 
-        // --- ÉTAPE D'EXPRESSION LIBRE & VALIDATION DE L'AXE ---
+        function onFreeTextInput(val) {
+            if (state.currentAxeKey) {
+                state.freeTextByAxe[state.currentAxeKey] = val;
+                saveStateToStorage();
+            }
+        }
+
         function openFreeTextStep() {
             const axeCfg = AXES_CONFIG[state.currentAxeKey];
             document.getElementById('text-axe-badge').textContent = axeCfg.shortTitle;
             document.getElementById('free-text-question').textContent = axeCfg.freeTextPrompt;
             document.getElementById('free_text_input').value = state.freeTextByAxe[state.currentAxeKey] || '';
 
-            // Afficher le récapitulatif des votes de l'élu sur cet axe
             const recapEl = document.getElementById('recap-votes-axe');
             let allVotedWords = [];
             axeCfg.clouds.forEach(c => {
@@ -1710,18 +1538,26 @@
             loadCloudStep(axeCfg.clouds.length - 1);
         }
 
+        // ENREGISTREMENT UNIQUE ET ATOMIQUE DE L'AXE
         async function saveAxeCompletion() {
             const axeKey = state.currentAxeKey;
             const axeCfg = AXES_CONFIG[axeKey];
+            if (!axeCfg) return;
+
+            if (state.completedThemes.includes(axeKey)) {
+                goToStep('step-themes');
+                return;
+            }
+
             const freeText = document.getElementById('free_text_input').value.trim();
             state.freeTextByAxe[axeKey] = freeText;
 
-            const votesQ1 = (axeCfg.clouds[0] && state.selectedVotesByCloud[axeCfg.clouds[0].id])
-                ? state.selectedVotesByCloud[axeCfg.clouds[0].id].join(' | ')
-                : '';
-            const votesQ2 = (axeCfg.clouds[1] && state.selectedVotesByCloud[axeCfg.clouds[1].id])
-                ? state.selectedVotesByCloud[axeCfg.clouds[1].id].join(' | ')
-                : '';
+            const votesQ1Arr = (axeCfg.clouds[0] && state.selectedVotesByCloud[axeCfg.clouds[0].id])
+                ? state.selectedVotesByCloud[axeCfg.clouds[0].id]
+                : [];
+            const votesQ2Arr = (axeCfg.clouds[1] && state.selectedVotesByCloud[axeCfg.clouds[1].id])
+                ? state.selectedVotesByCloud[axeCfg.clouds[1].id]
+                : [];
 
             const btn = document.getElementById('btn-save-axe');
             const originalHtml = btn.innerHTML;
@@ -1729,56 +1565,62 @@
             btn.disabled = true;
 
             try {
-                const { error } = await supabaseClient.from(TABLE_REPONSES).insert([{
+                // 1. Insérer la ligne de réponse avec la trace exacte des votes
+                const { error: repErr } = await supabaseClient.from(TABLE_REPONSES).insert([{
                     structure_name: state.structureName || 'Élu(e)',
                     commune: state.communeName || '',
                     theme: axeKey,
-                    point_fort: freeText || ' Votes enregistrés dans les nuages',
-                    votes_q1: votesQ1,
-                    votes_q2: votesQ2
+                    point_fort: freeText || '',
+                    votes_q1: votesQ1Arr.join(' | '),
+                    votes_q2: votesQ2Arr.join(' | ')
                 }]);
-                if (error) throw error;
+                if (repErr) throw repErr;
+
+                // 2. Incrémenter aussi la table idees pour l'export CSV des nuages
+                for (let i = 0; i < axeCfg.clouds.length; i++) {
+                    const cloudId = axeCfg.clouds[i].id;
+                    const chosen = state.selectedVotesByCloud[cloudId] || [];
+                    for (const word of chosen) {
+                        await supabaseClient.rpc(RPC_VOTER, {
+                            p_theme: cloudId,
+                            p_mot: word
+                        });
+                    }
+                }
+
+                state.completedThemes.push(axeKey);
+                saveStateToStorage();
+                showToast(`✅ ${axeCfg.shortTitle} validé et enregistré !`);
+
+                if (state.completedThemes.length >= Object.keys(AXES_CONFIG).length) {
+                    goToStep('step-merci');
+                } else {
+                    goToStep('step-themes');
+                }
             } catch (err) {
-                console.error("Erreur insertion réponse:", err);
+                console.error("Erreur enregistrement axe:", err);
+                showToast("❌ Erreur réseau lors de l'enregistrement.");
             } finally {
                 btn.innerHTML = originalHtml;
                 btn.disabled = false;
             }
-
-            if (!state.completedThemes.includes(axeKey)) {
-                state.completedThemes.push(axeKey);
-            }
-
-            showToast(`✅ ${axeCfg.shortTitle} enregistré avec succès !`);
-
-            if (state.completedThemes.length >= Object.keys(AXES_CONFIG).length) {
-                goToStep('step-merci');
-            } else {
-                goToStep('step-themes');
-            }
         }
 
-        // --- MODALS QR CODE & MÉMO BILAN ---
-        function openQrModal() {
-            document.getElementById('qr-fullscreen-modal').classList.add('active');
-        }
-        function closeQrModal() {
-            document.getElementById('qr-fullscreen-modal').classList.remove('active');
-        }
-        function openBilanModal() {
-            document.getElementById('bilan-modal').classList.add('active');
-        }
-        function closeBilanModal() {
-            document.getElementById('bilan-modal').classList.remove('active');
-        }
+        // --- MODALS ---
+        function openQrModal() { document.getElementById('qr-fullscreen-modal').classList.add('active'); }
+        function closeQrModal() { document.getElementById('qr-fullscreen-modal').classList.remove('active'); }
+        function openBilanModal() { document.getElementById('bilan-modal').classList.add('active'); }
+        function closeBilanModal() { document.getElementById('bilan-modal').classList.remove('active'); }
 
-        // --- MODE RÉSULTATS EN DIRECT (GRAND ÉCRAN) ---
+        // =====================================================================
+        // MODE RÉSULTATS EN DIRECT (BASÉ SUR LES LIGNES ACTIVES DE RÉPONSES)
+        // =====================================================================
         async function openLiveResults() {
             document.getElementById('live-results-modal').classList.add('active');
             renderLiveTabs();
             await refreshLiveResults();
             clearInterval(liveRefreshInterval);
-            liveRefreshInterval = setInterval(refreshLiveResults, 12000);
+            liveRefreshInterval = setInterval(refreshLiveResults, 10000);
         }
 
         function closeLiveResults() {
@@ -1791,10 +1633,10 @@
             const tabs = [
                 { key: 'all', label: '🌍 Vue Globale' },
                 { key: 'cap_ctg', label: '🎯 Cap CTG 2027-2031' },
-                { key: 'axe1', label: '🔄 Axe 1 : Besoins' },
-                { key: 'axe2', label: '🤝 Axe 2 : Mutualisations' },
-                { key: 'axe3', label: '🏘️ Axe 3 : Bourgs' },
-                { key: 'axe4', label: '💬 Axe 4 : Appartenance' }
+                { key: 'axe1', label: '🔄 1. Besoins' },
+                { key: 'axe2', label: '🤝 2. Mutualisations' },
+                { key: 'axe3', label: '🏘️ 3. Bourgs' },
+                { key: 'axe4', label: '💬 4. Appartenance' }
             ];
             bar.innerHTML = tabs.map(t => `
                 <button type="button" onclick="switchLiveTab('${t.key}')"
@@ -1814,89 +1656,102 @@
             refreshLiveResults();
         }
 
+        // Calcule l'état exact de tous les nuages à partir des réponses existantes
+        function buildCloudMapFromReponses(reponses) {
+            const cloudMap = {};
+            Object.keys(AXES_CONFIG).forEach(axeKey => {
+                const cfg = AXES_CONFIG[axeKey];
+                cfg.clouds.forEach((c, idx) => {
+                    cloudMap[c.id] = {};
+                    c.seedWords.forEach(w => { cloudMap[c.id][w] = 1; });
+                    const col = idx === 0 ? 'votes_q1' : 'votes_q2';
+                    reponses.filter(r => r.theme === axeKey).forEach(r => {
+                        const raw = r[col] || '';
+                        raw.split('|').map(s => s.trim()).filter(Boolean).forEach(w => {
+                            if (cloudMap[c.id][w] === undefined) cloudMap[c.id][w] = 0;
+                            cloudMap[c.id][w] += 1;
+                        });
+                    });
+                });
+            });
+            return cloudMap;
+        }
+
         async function refreshLiveResults() {
             const body = document.getElementById('live-results-body');
             try {
-                const [ideesRes, repRes] = await Promise.all([
-                    supabaseClient.from(TABLE_IDEES).select('*').order('votes', { ascending: false }),
-                    supabaseClient.from(TABLE_REPONSES).select('*').order('created_at', { ascending: false })
-                ]);
+                const { data: reponsesData, error } = await supabaseClient
+                    .from(TABLE_REPONSES)
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-                const idees = ideesRes.data || [];
-                const reponses = repRes.data || [];
+                if (error) throw error;
+                const reponses = reponsesData || [];
+                const cloudMap = buildCloudMapFromReponses(reponses);
+
+                // Compter le total des votes exprimés par les élus
+                let totalElusVotes = 0;
+                reponses.forEach(r => {
+                    totalElusVotes += (r.votes_q1 ? r.votes_q1.split('|').filter(s => s.trim()).length : 0);
+                    totalElusVotes += (r.votes_q2 ? r.votes_q2.split('|').filter(s => s.trim()).length : 0);
+                });
+
+                const uniqueElus = new Set(reponses.map(r => r.structure_name)).size;
 
                 const axesToShow = state.liveActiveTab === 'all'
                     ? ['cap_ctg', 'axe1', 'axe2', 'axe3', 'axe4']
                     : [state.liveActiveTab];
 
-                const totalVotes = idees.reduce((acc, i) => acc + (i.votes || 0), 0);
-
                 let html = `
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                            <div>
-                                <div class="text-xs font-bold text-slate-500 uppercase">Axes validés par les élus</div>
-                                <div class="text-2xl font-extrabold text-slate-900">${reponses.length}</div>
-                            </div>
-                            <span class="text-3xl">🗳️</span>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center">
+                            <div class="text-[11px] font-bold text-slate-500 uppercase">Élus participants</div>
+                            <div class="text-2xl font-extrabold text-slate-900">${uniqueElus}</div>
                         </div>
-                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                            <div>
-                                <div class="text-xs font-bold text-slate-500 uppercase">Poids cumulé des nuages</div>
-                                <div class="text-2xl font-extrabold text-primary">${totalVotes} pts</div>
-                            </div>
-                            <span class="text-3xl">☁️</span>
+                        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center">
+                            <div class="text-[11px] font-bold text-slate-500 uppercase">Axes validés</div>
+                            <div class="text-2xl font-extrabold text-primary">${reponses.length}</div>
                         </div>
-                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                            <div>
-                                <div class="text-xs font-bold text-slate-500 uppercase">Idées dans les nuages</div>
-                                <div class="text-2xl font-extrabold text-emerald-600">${idees.length}</div>
-                            </div>
-                            <span class="text-3xl">💡</span>
+                        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center">
+                            <div class="text-[11px] font-bold text-slate-500 uppercase">Votes exprimés</div>
+                            <div class="text-2xl font-extrabold text-emerald-600">${totalElusVotes}</div>
                         </div>
                     </div>
                 `;
 
                 axesToShow.forEach(axeKey => {
                     const cfg = AXES_CONFIG[axeKey];
-                    const axeReps = reponses.filter(r => r.theme === axeKey && r.point_fort && !r.point_fort.startsWith(' Votes enregistrés'));
+                    const axeReps = reponses.filter(r => r.theme === axeKey && r.point_fort && r.point_fort.trim() !== '');
 
                     html += `
                         <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-                            <div class="px-5 py-4 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-2">
-                                <div class="flex items-center gap-2.5">
-                                    <span class="text-2xl">${cfg.icon}</span>
-                                    <div>
-                                        <h3 class="font-extrabold text-base sm:text-lg">${cfg.title}</h3>
-                                        <p class="text-xs text-sky-300">${cfg.mandatBadge}</p>
-                                    </div>
-                                </div>
+                            <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center gap-2.5">
+                                <span class="text-xl">${cfg.icon}</span>
+                                <h3 class="font-extrabold text-sm sm:text-base">${cfg.title}</h3>
                             </div>
-                            <div class="p-5 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
                     `;
 
                     cfg.clouds.forEach(c => {
-                        let cloudItems = idees.filter(i => i.theme === c.id);
-                        if (cloudItems.length === 0) {
-                            cloudItems = c.seedWords.map(w => ({ mot: w, votes: 1 }));
-                        }
-                        const maxV = Math.max(...cloudItems.map(i => i.votes), 1);
+                        const entries = Object.entries(cloudMap[c.id] || {}).sort((a, b) => b[1] - a[1]);
+                        const maxV = Math.max(...entries.map(e => e[1]), 1);
 
                         html += `
                             <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
                                 <div class="text-xs font-extrabold text-primary uppercase mb-1">${c.stepLabel}</div>
-                                <div class="text-sm font-bold text-slate-800 mb-3">${c.question}</div>
+                                <div class="text-xs sm:text-sm font-bold text-slate-800 mb-3">${c.question}</div>
                                 <div class="space-y-2">
-                                    ${cloudItems.slice(0, 8).map((item, idx) => {
-                                        const pct = Math.round((item.votes / maxV) * 100);
+                                    ${entries.slice(0, 8).map(([mot, votes], idx) => {
+                                        const pct = Math.round((votes / maxV) * 100);
+                                        const realVotes = votes - (c.seedWords.includes(mot) ? 1 : 0);
                                         return `
                                             <div>
                                                 <div class="flex justify-between text-xs font-bold mb-1">
-                                                    <span class="text-slate-800">${idx < 3 ? '🏆 ' : ''}${item.mot}</span>
-                                                    <span class="text-primary_dark">${item.votes} vote(s)</span>
+                                                    <span class="text-slate-800">${idx < 3 && realVotes > 0 ? '🏆 ' : ''}${mot}</span>
+                                                    <span class="text-primary_dark">${realVotes} vote(s) <span class="text-[10px] text-slate-400 font-normal">(poids ${votes})</span></span>
                                                 </div>
                                                 <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
-                                                    <div class="h-full bg-gradient-to-r from-primary to-sky-400 rounded-full transition-all" style="width:${pct}%"></div>
+                                                    <div class="h-full bg-gradient-to-r from-primary to-sky-400 rounded-full" style="width:${pct}%"></div>
                                                 </div>
                                             </div>
                                         `;
@@ -1911,13 +1766,13 @@
                     if (axeReps.length > 0) {
                         html += `
                             <div class="px-5 pb-5">
-                                <div class="bg-amber-50/70 border border-amber-200 rounded-2xl p-4">
-                                    <div class="text-xs font-extrabold text-amber-900 uppercase mb-2">💬 Expressions libres & Verbatims des élus (${axeReps.length})</div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                                <div class="bg-amber-50/70 border border-amber-200 rounded-2xl p-3.5">
+                                    <div class="text-xs font-extrabold text-amber-900 uppercase mb-2">💬 Expressions libres (${axeReps.length})</div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                         ${axeReps.map(r => `
-                                            <div class="bg-white p-3 rounded-xl border border-amber-200/80 text-xs">
-                                                <div class="font-bold text-slate-900 mb-1">${r.structure_name} ${r.commune ? `<span class="text-primary">(${r.commune})</span>` : ''}</div>
-                                                <div class="text-slate-700 italic">« ${r.point_fort} »</div>
+                                            <div class="bg-white p-2.5 rounded-xl border border-amber-200/80 text-xs">
+                                                <span class="font-bold text-slate-900">${r.structure_name}${r.commune ? ` (${r.commune})` : ''} :</span>
+                                                <span class="text-slate-700 italic"> « ${r.point_fort} »</span>
                                             </div>
                                         `).join('')}
                                     </div>
@@ -1931,12 +1786,13 @@
 
                 body.innerHTML = html;
             } catch (err) {
-                console.error("Erreur chargement direct:", err);
-                body.innerHTML = `<div class="p-8 text-center text-red-600 font-bold">Vérifiez que le script SQL <code>setup_supabase_commission_08102026.sql</code> a bien été exécuté dans Supabase.</div>`;
+                console.error("Erreur direct:", err);
             }
         }
 
-        // --- FONCTIONS ADMINISTRATEUR (admin@ccmvr.fr) ---
+        // =====================================================================
+        // PANNEAU ADMINISTRATEUR & SUPPRESSION CASCADÉE DES VOTES
+        // =====================================================================
         function openAdminLogin() {
             document.getElementById('admin-login-modal').classList.add('active');
             document.getElementById('admin-pwd').focus();
@@ -1960,10 +1816,7 @@
             let email = userInput.value.trim();
             const pwd = pwdInput.value;
             if (!email || !pwd) return;
-
-            if (email.toLowerCase() === 'admin') {
-                email = 'admin@ccmvr.fr';
-            }
+            if (email.toLowerCase() === 'admin') email = 'admin@ccmvr.fr';
 
             btnLogin.textContent = "Connexion...";
             btnLogin.disabled = true;
@@ -1975,14 +1828,70 @@
                 });
                 if (authError) throw authError;
 
-                await loadAdminAll();
+                // Dès l'ouverture de l'Admin, resynchroniser automatiquement la table des idées avec les réponses existantes !
+                await recalculateAllIdeesFromReponses(false);
                 closeAdminLogin();
                 document.getElementById('admin-dashboard').classList.add('active');
             } catch (err) {
                 alert("Erreur d'authentification : " + err.message);
             } finally {
-                btnLogin.textContent = "Déverrouiller le panneau";
+                btnLogin.textContent = "Déverrouiller";
                 btnLogin.disabled = false;
+            }
+        }
+
+        // Resynchronise à 100 % la table `table_elus_commission_08102026_idees`
+        // à partir des lignes présentes dans `table_elus_commission_08102026_reponses` !
+        // Ainsi, toute ligne de réponse supprimée retire immédiatement ses votes et supprime les mots orphelins.
+        async function recalculateAllIdeesFromReponses(showNotification) {
+            try {
+                const { data: reponses, error: repErr } = await supabaseClient
+                    .from(TABLE_REPONSES)
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                if (repErr) throw repErr;
+
+                const expectedCloudMap = buildCloudMapFromReponses(reponses || []);
+
+                const { data: currentIdees, error: idErr } = await supabaseClient
+                    .from(TABLE_IDEES)
+                    .select('*');
+                if (idErr) throw idErr;
+
+                // 1. Supprimer ou mettre à jour les lignes existantes dans TABLE_IDEES
+                for (const row of (currentIdees || [])) {
+                    const expectedVotes = expectedCloudMap[row.theme]?.[row.mot];
+                    if (expectedVotes === undefined || expectedVotes <= 0) {
+                        // Ce mot n'a plus aucun vote et n'est pas un mot d'amorçage : on le supprime !
+                        await supabaseClient.from(TABLE_IDEES).delete().eq('id', row.id);
+                    } else if (row.votes !== expectedVotes) {
+                        await supabaseClient.from(TABLE_IDEES).update({ votes: expectedVotes }).eq('id', row.id);
+                    }
+                    if (expectedCloudMap[row.theme]) {
+                        delete expectedCloudMap[row.theme][row.mot];
+                    }
+                }
+
+                // 2. Insérer les mots manquants (amorçage ou nouveaux mots votés)
+                const toInsert = [];
+                Object.keys(expectedCloudMap).forEach(themeKey => {
+                    Object.entries(expectedCloudMap[themeKey]).forEach(([mot, votes]) => {
+                        if (votes > 0) {
+                            toInsert.push({ theme: themeKey, mot: mot, votes: votes });
+                        }
+                    });
+                });
+                if (toInsert.length > 0) {
+                    await supabaseClient.from(TABLE_IDEES).upsert(toInsert, { onConflict: 'theme,mot' });
+                }
+
+                await loadAdminAll();
+                if (showNotification) {
+                    showToast("✅ Nuages de mots resynchronisés avec les participations !");
+                }
+            } catch (err) {
+                console.error("Erreur resynchronisation:", err);
+                await loadAdminAll();
             }
         }
 
@@ -2037,7 +1946,7 @@
                     <td class="py-3 px-2 max-w-xs truncate" title="${row.point_fort || ''}">${row.point_fort || '-'}</td>
                     <td class="py-3 px-2 text-right whitespace-nowrap">
                         <button onclick="editAdminRecord('reponse', '${row.id}')" class="text-primary hover:underline font-semibold mr-2">Éditer</button>
-                        <button onclick="deleteAdminRecord('reponse', '${row.id}')" class="text-red-600 hover:underline font-semibold">Suppr.</button>
+                        <button onclick="deleteAdminRecord('reponse', '${row.id}')" class="text-red-600 hover:underline font-semibold">Suppr. (+ votes)</button>
                     </td>
                 `;
                 tbodyRep.appendChild(tr);
@@ -2061,13 +1970,25 @@
             });
         }
 
+        // SUPPRESSION EN CASCADE : Supprimer une ligne de réponse décrémente et nettoie automatiquement les votes associés !
         async function deleteAdminRecord(type, id) {
-            if (!confirm("Confirmer la suppression définitive de cette ligne ?")) return;
+            if (!confirm(type === 'reponse'
+                ? "Supprimer cette participation ET retirer automatiquement tous ses votes associés dans les nuages de mots ?"
+                : "Supprimer définitivement ce mot du nuage ?")) return;
+
             try {
-                const table = type === 'reponse' ? TABLE_REPONSES : TABLE_IDEES;
-                const { error } = await supabaseClient.from(table).delete().eq('id', id);
-                if (error) throw error;
-                await loadAdminAll();
+                if (type === 'reponse') {
+                    const { error } = await supabaseClient.from(TABLE_REPONSES).delete().eq('id', id);
+                    if (error) throw error;
+                    // Recalculer immédiatement tous les nuages pour retirer les votes associés !
+                    await recalculateAllIdeesFromReponses(false);
+                    showToast("🗑️ Participation et votes associés supprimés !");
+                } else {
+                    const { error } = await supabaseClient.from(TABLE_IDEES).delete().eq('id', id);
+                    if (error) throw error;
+                    await loadAdminAll();
+                    showToast("🗑️ Mot supprimé !");
+                }
             } catch (err) {
                 alert("Erreur suppression : " + err.message);
             }
@@ -2098,30 +2019,10 @@
             }
         }
 
-        async function seedDefaultWordsToDB() {
-            if (!confirm("Insérer les mots d'amorçage manquants dans Supabase (sans écraser les votes existants) ?")) return;
-            try {
-                for (const axeKey of Object.keys(AXES_CONFIG)) {
-                    for (const cloud of AXES_CONFIG[axeKey].clouds) {
-                        for (const word of cloud.seedWords) {
-                            await supabaseClient.from(TABLE_IDEES).upsert(
-                                { theme: cloud.id, mot: word, votes: 1 },
-                                { onConflict: 'theme,mot', ignoreDuplicates: true }
-                            );
-                        }
-                    }
-                }
-                await loadAdminAll();
-                showToast("✅ Mots d'amorçage synchronisés avec succès !");
-            } catch (err) {
-                alert("Erreur lors de l'injection : " + err.message);
-            }
-        }
-
         function exportCSV() {
             const data = currentAdminTab === 'reponses' ? adminDataReponses : adminDataIdees;
             if (!data || data.length === 0) {
-                alert("Aucune donnée à exporter dans cet onglet.");
+                alert("Aucune donnée à exporter.");
                 return;
             }
             const keys = Object.keys(data[0]);
