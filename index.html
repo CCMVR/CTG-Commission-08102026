@@ -183,19 +183,27 @@
         .word-tag {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 0.55rem 1rem;
+            gap: 8px;
+            padding: 0.65rem 1.05rem;
             border-radius: 9999px;
             background-color: #ffffff;
-            color: #334155;
+            color: #1e293b;
             border: 2px solid #cbd5e1;
             cursor: pointer;
             user-select: none;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            line-height: 1.25;
-            box-shadow: 0 2px 5px rgba(15, 23, 42, 0.04);
+            line-height: 1.3;
+            box-shadow: 0 2px 5px rgba(15, 23, 42, 0.05);
             max-width: 100%;
             text-align: left;
+            min-height: 44px;
+        }
+
+        @media (max-width: 640px) {
+            .word-tag {
+                padding: 0.7rem 1rem;
+                gap: 7px;
+            }
         }
 
         .word-tag:hover {
@@ -240,6 +248,37 @@
         .modal-overlay.active {
             display: flex;
         }
+
+        /* Impression Fiche Papier A4 Recto-Verso */
+        #printable-paper-sheet {
+            display: none;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 8mm 10mm;
+            }
+            body {
+                background: #ffffff !important;
+                color: #0f172a !important;
+                display: block !important;
+                min-height: auto !important;
+            }
+            header, main, .modal-overlay, #btn-admin-float {
+                display: none !important;
+            }
+            #printable-paper-sheet {
+                display: block !important;
+                width: 100% !important;
+                font-size: 9.5pt !important;
+                line-height: 1.28 !important;
+            }
+            .print-page-break {
+                page-break-before: always;
+                break-before: page;
+            }
+        }
     </style>
 </head>
 
@@ -261,6 +300,11 @@
 
             <!-- Actions Rapides & Progression -->
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <button type="button" onclick="openPaperModal()" title="Support papier A4 ou saisie express d'une fiche papier"
+                    class="hidden md:flex px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs items-center gap-1.5 transition-colors border border-slate-200">
+                    <span>🖨️ Support papier</span>
+                </button>
+
                 <button type="button" onclick="openQrModal()" title="Afficher le QR Code en plein écran"
                     class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1.5 transition-colors border border-slate-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -285,36 +329,39 @@
 
     <!-- CONTENEUR PRINCIPAL -->
     <main class="flex-grow flex items-center justify-center p-3 sm:p-6 mt-16 pb-16 w-full">
-        <div class="w-full max-w-3xl bg-white rounded-3xl shadow-xl border border-slate-200/70 overflow-hidden p-5 sm:p-8 relative">
+        <div class="w-full max-w-3xl bg-white rounded-3xl shadow-xl border border-slate-200/70 overflow-hidden p-4 sm:p-8 relative">
 
             <!-- ========================================================= -->
-            <!-- ÉTAPE 1 : ACCUEIL ÉPURÉ & LOGOS 2X PLUS GRANDS            -->
+            <!-- ÉTAPE 1 : ACCUEIL ÉPURÉ & LOGOS CÔTE À CÔTE (GAUCHE/DROITE)-->
             <!-- ========================================================= -->
             <div class="step active" id="step-accueil">
-                <div class="text-center py-2 sm:py-4">
+                <div class="text-center py-1 sm:py-3">
 
-                    <!-- LOGOS 2 FOIS PLUS GROS -->
-                    <div class="flex items-center justify-center gap-8 sm:gap-16 mb-8 bg-slate-50/70 py-6 px-4 rounded-3xl border border-slate-100">
-                        <img src="./logo-collectivite.png" alt="Logo CCMVR" class="h-32 sm:h-48 object-contain"
-                            onerror="this.src='https://placehold.co/400x200/f8fafc/0284c7?text=CCMVR'">
-                        <div class="h-24 sm:h-36 w-px bg-slate-300"></div>
-                        <img src="./logo-caf.png" alt="Logo CAF Haute-Loire" class="h-32 sm:h-48 object-contain"
-                            onerror="this.src='https://placehold.co/400x200/f8fafc/0d9488?text=CAF+Haute-Loire'">
+                    <!-- LOGOS UN À GAUCHE, UN À DROITE (hauteur optimisée sur téléphone pour ne pas pousser le bouton) -->
+                    <div class="grid grid-cols-2 items-center gap-4 sm:gap-12 mb-4 sm:mb-7 bg-slate-50/80 py-3.5 sm:py-6 px-4 sm:px-8 rounded-3xl border border-slate-100 relative">
+                        <div class="flex items-center justify-center pr-2 sm:pr-4 border-r border-slate-200/90">
+                            <img src="./logo-collectivite.png" alt="Logo CCMVR" class="h-20 sm:h-44 w-auto object-contain mx-auto"
+                                onerror="this.src='https://placehold.co/400x200/f8fafc/0284c7?text=CCMVR'">
+                        </div>
+                        <div class="flex items-center justify-center pl-2 sm:pl-4">
+                            <img src="./logo-caf.png" alt="Logo CAF Haute-Loire" class="h-20 sm:h-44 w-auto object-contain mx-auto"
+                                onerror="this.src='https://placehold.co/400x200/f8fafc/0d9488?text=CAF+Haute-Loire'">
+                        </div>
                     </div>
 
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-100 text-primary_dark font-bold text-xs uppercase tracking-wider mb-3">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 text-primary_dark font-bold text-[11px] sm:text-xs uppercase tracking-wider mb-2 sm:mb-3">
                         Commission Enfance • Jeunesse • Solidarités • 08/10/2026
                     </div>
 
-                    <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-6">
+                    <h1 class="text-xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4 sm:mb-6">
                         Plan de Mandat & Future <span class="text-primary">CTG 2027–2031</span>
                     </h1>
 
-                    <!-- Bloc central : Bouton d'action + QR Code côte à côte sans blabla -->
+                    <!-- Bloc central : QR Code masqué sur téléphone (hidden sm:flex) pour accès immédiat au bouton bleu -->
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center max-w-2xl mx-auto">
 
-                        <!-- QR Code Grand Écran -->
-                        <div class="sm:col-span-5 bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl p-4 flex flex-col items-center">
+                        <!-- QR Code Grand Écran (visible sur ordinateur/vidéoprojecteur, masqué automatiquement sur téléphone) -->
+                        <div class="hidden sm:flex sm:col-span-5 bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl p-4 flex-col items-center">
                             <div onclick="openQrModal()" title="Cliquer pour agrandir"
                                 class="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 cursor-pointer hover:scale-105 transition-transform">
                                 <div id="qrcode-home" class="w-36 h-36 sm:w-40 sm:h-40 flex items-center justify-center mx-auto"></div>
@@ -330,7 +377,7 @@
                             <button type="button" onclick="startOrResumeSurvey()" id="btn-start-main"
                                 class="w-full bg-primary hover:bg-primary_dark text-white font-extrabold text-base sm:text-lg py-4 px-6 rounded-2xl shadow-lg shadow-sky-500/30 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
                                 <span id="btn-start-label">Commencer l'échange</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                             </button>
@@ -340,10 +387,16 @@
                                 <span>📊 Résultats en direct (Grand Écran)</span>
                             </button>
 
-                            <button type="button" onclick="openBilanModal()"
-                                class="w-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-xs py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5">
-                                <span>📌 Mémo Chiffres Clés CTG (2022-2026)</span>
-                            </button>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <button type="button" onclick="openBilanModal()"
+                                    class="w-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-xs py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                    <span>📌 Chiffres Clés CTG</span>
+                                </button>
+                                <button type="button" onclick="openPaperModal()"
+                                    class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                    <span>🖨️ Fiche Papier / Saisie</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -392,7 +445,7 @@
             </div>
 
             <!-- ========================================================= -->
-            <!-- ÉTAPE 3 : ROUE VISUELLE DES AXES (ZÉRO EMPILAGE / BLABLA) -->
+            <!-- ÉTAPE 3 : ROUE SUR GRAND ÉCRAN / 5 GROS BOUTONS SUR MOBILE-->
             <!-- ========================================================= -->
             <div class="step" id="step-themes">
                 <div class="flex items-center justify-between gap-2 mb-2">
@@ -406,21 +459,32 @@
                     </button>
                 </div>
 
-                <p class="text-xs sm:text-sm text-slate-500 mb-4">
+                <p class="text-xs sm:text-sm text-slate-500 mb-3 sm:mb-4">
                     Touchez l'un des 4 axes ou le cœur central <strong>Cap CTG</strong> pour voter.
                 </p>
 
-                <!-- ROUE / CONSTELLATION VISUELLE SUR TOUS LES ÉCRANS (MOBILE & DESKTOP) -->
-                <div class="theme-circle-container my-2 sm:my-4" id="theme-circle">
+                <!-- 1) VERSION TÉLÉPHONE : 5 GROS BOUTONS EMPILÉS ULTRA-LISIBLES -->
+                <div class="flex sm:hidden flex-col gap-3 my-3" id="theme-mobile-list">
+                    <!-- Généré par JS -->
+                </div>
+
+                <!-- 2) VERSION ORDINATEUR / TABLETTE / VIDÉOPROJECTEUR : ROUE CONSTELLATION -->
+                <div class="hidden sm:block theme-circle-container my-4" id="theme-circle">
                     <!-- Généré par JS -->
                 </div>
 
                 <!-- Pied de page épuré -->
                 <div class="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-slate-100 gap-3 mt-4">
-                    <button type="button" onclick="resetCurrentParticipantSession()"
-                        class="text-xs text-slate-400 hover:text-slate-600 underline">
-                        Changer de participant
-                    </button>
+                    <div class="flex items-center gap-4">
+                        <button type="button" onclick="resetCurrentParticipantSession()"
+                            class="text-xs text-slate-500 hover:text-slate-800 underline font-medium">
+                            👤 Changer de participant
+                        </button>
+                        <button type="button" onclick="openPaperModal()"
+                            class="text-xs text-primary hover:text-primary_dark underline font-semibold">
+                            📝 Saisir une fiche papier
+                        </button>
+                    </div>
                     <button type="button" onclick="goToStep('step-merci')"
                         class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-7 rounded-full shadow-md transition-all flex items-center justify-center gap-2 text-sm">
                         <span>J'ai terminé le sondage</span>
@@ -571,14 +635,18 @@
                     <p class="text-sm sm:text-base text-slate-600 mb-7 max-w-md mx-auto">
                         Vos choix sont enregistrés pour préparer la future CTG 2027–2031.
                     </p>
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3">
                         <button type="button" onclick="openLiveResults()"
                             class="w-full sm:w-auto bg-primary hover:bg-primary_dark text-white font-extrabold py-3 px-7 rounded-full shadow-md">
                             📊 Voir les résultats en direct
                         </button>
                         <button type="button" onclick="goToStep('step-themes')"
                             class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 px-6 rounded-full">
-                            Retour à la roue des axes
+                            Retour aux axes
+                        </button>
+                        <button type="button" onclick="openPaperModal()"
+                            class="w-full sm:w-auto bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold py-3 px-6 rounded-full">
+                            📝 Saisir une fiche papier
                         </button>
                     </div>
                 </div>
@@ -591,6 +659,82 @@
             </div>
         </div>
     </main>
+
+    <!-- CONTENEUR D'IMPRESSION A4 RECTO-VERSO (VISIBLE UNIQUEMENT À L'IMPRESSION) -->
+    <div id="printable-paper-sheet"></div>
+
+    <!-- MODAL SUPPORT PAPIER A4 & SAISIE EXPRESS FICHE PAPIER -->
+    <div id="paper-modal" class="modal-overlay p-2 sm:p-6">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden">
+            <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">🖨️</span>
+                    <h3 class="text-sm sm:text-lg font-extrabold">Support Papier (A4 Recto-Verso) & Saisie Express</h3>
+                </div>
+                <button type="button" onclick="closePaperModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white">✕</button>
+            </div>
+
+            <!-- Bandeau d'actions : Imprimer la fiche vierge OU Saisir une fiche remplie -->
+            <div class="p-4 bg-sky-50 border-b border-sky-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="text-xs sm:text-sm text-slate-700">
+                    <strong class="text-slate-900">1. Avant la séance :</strong> Imprimez la fiche A4 recto-verso pour les élus préférant le papier.<br>
+                    <strong class="text-slate-900">2. Pendant/après la séance :</strong> Cochez ci-dessous leurs réponses pour les intégrer en direct aux nuages !
+                </div>
+                <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+                    <button type="button" onclick="triggerPrintPaperSheet()"
+                        class="w-full sm:w-auto bg-primary hover:bg-primary_dark text-white font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm shadow-sm flex items-center justify-center gap-2">
+                        <span>🖨️ Imprimer la Fiche A4</span>
+                    </button>
+                    <a href="./fiche_papier_imprimable.html" target="_blank"
+                        class="w-full sm:w-auto bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-3 py-2.5 rounded-xl text-xs text-center">
+                        📄 Ouvrir dans un onglet
+                    </a>
+                </div>
+            </div>
+
+            <!-- Formulaire de Saisie Express d'une fiche papier -->
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-5 bg-slate-50 flex-grow" id="paper-express-form">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="text-xs font-extrabold uppercase text-primary mb-3">📝 Saisie express d'une fiche papier remplie</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Prénom et initiale de l'élu(e) <span class="text-red-500">*</span></label>
+                            <input type="text" id="paper_structure_name" placeholder="Ex : Jean M. (Fiche papier)"
+                                class="w-full text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-primary font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Commune</label>
+                            <select id="paper_commune_name"
+                                class="w-full text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-primary font-medium bg-white">
+                                <option value="">-- Choisir la commune (optionnel) --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liste des 5 axes avec cases à cocher rapides -->
+                <div id="paper-express-axes-container" class="space-y-4"></div>
+            </div>
+
+            <!-- Pied de modale Saisie Express -->
+            <div class="px-5 py-3.5 bg-white border-t border-slate-200 flex items-center justify-between gap-3">
+                <button type="button" onclick="resetPaperExpressForm()"
+                    class="text-xs font-bold text-slate-500 hover:text-slate-800 px-3 py-2 rounded-xl hover:bg-slate-100">
+                    Effacer les cases
+                </button>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="closePaperModal()"
+                        class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100">
+                        Fermer
+                    </button>
+                    <button type="button" onclick="submitPaperExpressForm()" id="btn-submit-paper"
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md flex items-center gap-2">
+                        <span>✅ Enregistrer cette fiche dans les nuages</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL QR CODE PLEIN ÉCRAN -->
     <div id="qr-fullscreen-modal" class="modal-overlay p-4">
@@ -625,11 +769,11 @@
                 </div>
                 <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200">
                     <div class="font-extrabold text-amber-900 mb-1">🛹 Jeunesse 11-17 ans</div>
-                    <p class="text-slate-700">6 accueils ados, Référent Jeunesse (0,5 ETP) • ⚠️ <strong>Chute de -41 % des heures d'accueil ados</strong> → offre à réinventer.</p>
+                    <p class="text-slate-700">6 accueils ados, Référent Jeunesse (0,5 ETP) • ⚠️ <strong>Baisse de fréquentation des accueils ados</strong> → une offre à réinventer.</p>
                 </div>
                 <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200">
                     <div class="font-extrabold text-emerald-900 mb-1">👨‍👩‍👧 Parentalité, Solidarités & CAF</div>
-                    <p class="text-slate-700">Observatoire créé en 2025 • Question d'un LAEP • Reprise CLAS (1er oct.) • CISPD • <strong>2,66 M€ d'aides CAF au total</strong>.</p>
+                    <p class="text-slate-700"><strong>Parentalité</strong> (accompagnement scolarité, réflexion LAEP) • <strong>Solidarités</strong> : animation de la vie sociale, accès aux droits, prévention • Observatoire • <strong>2,66 M€ d'aides CAF</strong>.</p>
                 </div>
             </div>
         </div>
@@ -644,6 +788,10 @@
                     <h2 class="text-sm sm:text-lg font-extrabold">Synthèse en Direct • Commission du 08/10/2026</h2>
                 </div>
                 <div class="flex items-center gap-2">
+                    <button type="button" onclick="openPaperModal()"
+                        class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-200 font-bold px-3 py-1.5 rounded-xl text-xs hidden sm:inline-block">
+                        📝 + Fiche papier
+                    </button>
                     <button type="button" onclick="refreshLiveResults()"
                         class="bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/40 text-sky-200 font-bold px-3 py-1.5 rounded-xl text-xs">
                         🔄 Actualiser
@@ -660,7 +808,7 @@
     </div>
 
     <!-- BOUTON DISCRET ADMIN -->
-    <button type="button" onclick="openAdminLogin()"
+    <button type="button" id="btn-admin-float" onclick="openAdminLogin()"
         class="fixed bottom-3 right-3 bg-white/80 hover:bg-white text-slate-400 hover:text-slate-700 p-2.5 rounded-full shadow-md border border-slate-200 z-40 transition-all"
         title="Administration (admin@ccmvr.fr)">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -696,6 +844,10 @@
                     <p class="text-xs text-slate-500">La suppression d'une ligne de participation retire automatiquement tous ses votes associés dans les nuages.</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
+                    <button onclick="openPaperModal()"
+                        class="bg-amber-100 text-amber-900 hover:bg-amber-200 font-bold px-3 py-2 rounded-xl text-xs">
+                        📝 Saisir fiche papier
+                    </button>
                     <button onclick="recalculateAllIdeesFromReponses(true)"
                         class="bg-sky-100 text-primary_dark hover:bg-sky-200 font-bold px-3 py-2 rounded-xl text-xs">
                         🔄 Resynchroniser les nuages
@@ -766,7 +918,7 @@
         const TABLE_IDEES = 'table_elus_commission_08102026_idees';
         const RPC_VOTER = 'voter_idee_commission_08102026';
         const APP_URL = 'https://ccmvr.github.io/CTG-Commission-08102026/';
-        const STORAGE_KEY = 'ccmvr_commission_08102026_state_v2';
+        const STORAGE_KEY = 'ccmvr_commission_08102026_state_v3';
         const MAX_VOTES_PER_CLOUD = 5;
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -778,6 +930,21 @@
             "Solignac-sous-Roche", "Saint-André-de-Chalencon"
         ];
 
+        // Normalisation automatique d'éventuels anciens intitulés de test en base
+        const LEGACY_WORD_MAP = {
+            'Accompagnement scolarité (CLAS)': 'Soutien à la parentalité',
+            'Publics fragiles & accès aux droits': 'Accès aux droits & publics fragiles',
+            'Écoute & prévention jeunes (PAEJ)': 'Prévention & écoute jeunes (PAEJ)',
+            'Solidarités de proximité (Seniors, CLAS)': 'Solidarités de proximité (vie sociale, accès aux droits, prévention)',
+            'Développer les solidarités (CLAS, CISPD)': 'Développer les solidarités (vie sociale, accès aux droits, prévention)'
+        };
+
+        function normalizeWordLabel(w) {
+            if (!w) return '';
+            const trimmed = w.trim();
+            return LEGACY_WORD_MAP[trimmed] || trimmed;
+        }
+
         const AXES_CONFIG = {
             'axe1': {
                 key: 'axe1',
@@ -788,8 +955,8 @@
                 constats: [
                     '👶 <strong>Petite Enfance</strong> : +11,8 % d\'heures mais <strong>66 % d\'occupation</strong> & natalité à 7,5 ‰ (SPPE).',
                     '🎒 <strong>Enfance (3-11 ans)</strong> : 19 ALSH stables, enjeux d\'<strong>inclusion (handicap)</strong>.',
-                    '🛹 <strong>Jeunesse (11-17 ans)</strong> : <strong>-41 % d\'heures d\'accueil ados</strong> → offre à réinventer.',
-                    '👨‍👩‍👧 <strong>Parentalité & Solidarités</strong> : Observatoire 2025, CLAS repris au 1er oct., réflexion LAEP.'
+                    '🛹 <strong>Jeunesse (11-17 ans)</strong> : <strong>Baisse de fréquentation des accueils ados</strong> → une offre à réinventer.',
+                    '👨‍👩‍👧 <strong>Parentalité & Solidarités</strong> : Soutien à la parentalité (accompagnement scolarité, réflexion LAEP) • Solidarités : animation de la vie sociale, accès aux droits, prévention.'
                 ],
                 clouds: [
                     {
@@ -801,16 +968,16 @@
                             'Inclusion & accueil handicap',
                             'Guichet Unique & RPE',
                             'Soutien à la parentalité',
-                            'Accompagnement scolarité (CLAS)',
-                            'Tarifs accessibles aux familles',
-                            'Publics fragiles & accès aux droits',
-                            'Écoute & prévention jeunes (PAEJ)'
+                            'Animation de la vie sociale',
+                            'Accès aux droits & publics fragiles',
+                            'Prévention & écoute jeunes (PAEJ)',
+                            'Tarifs accessibles aux familles'
                         ]
                     },
                     {
                         id: 'axe1_q2',
                         stepLabel: 'Nuage 2/2 • Adapter & Faire évoluer',
-                        question: 'Qu\'est-ce qui doit <span class="text-primary underline">ÉVOLUER ou ÊTRE ADAPTÉ</span> face aux réalités actuelles (baisse natalité, -41 % fréquentation ados, horaires...) ?',
+                        question: 'Qu\'est-ce qui doit <span class="text-primary underline">ÉVOLUER ou ÊTRE ADAPTÉ</span> face aux réalités actuelles (évolution démographique, fréquentation des ados, rythmes des familles...) ?',
                         seedWords: [
                             'Réinventer l\'offre Ados (11-17 ans)',
                             'Ajuster les places à la natalité',
@@ -860,6 +1027,7 @@
                             'Soutenir les bureaux associatifs',
                             'Rôle actif des élus référents',
                             'Lien Écoles / Périscolaire / ALSH',
+                            'Solidarités (vie sociale, accès aux droits, prévention)',
                             'Attractivité des métiers & BAFA',
                             'Parcours handicap (DAHLIR, PMI)',
                             'Partage de locaux communaux',
@@ -906,7 +1074,7 @@
                             'Navettes / mobilité des jeunes',
                             'Animations hors les murs dans les bourgs',
                             'Pôles d\'accueil équilibrés sur la CC',
-                            'Solidarités de proximité (Seniors, CLAS)',
+                            'Solidarités de proximité (vie sociale, accès aux droits, prévention)',
                             'Accompagner les communes rurales'
                         ]
                     }
@@ -978,7 +1146,7 @@
                             'Structurer Parentalité & Inclusion',
                             'Adapter l\'offre à la démographie & au budget',
                             'Renforcer l\'équité et la mobilité',
-                            'Développer les solidarités (CLAS, CISPD)'
+                            'Développer les solidarités (vie sociale, accès aux droits, prévention)'
                         ]
                     }
                 ],
@@ -1060,6 +1228,8 @@
         // --- INITIALISATION AU CHARGEMENT ---
         window.addEventListener('DOMContentLoaded', async () => {
             renderQrCodes();
+            buildPrintablePaperSheet();
+            initPaperExpressForm();
             const restored = loadStateFromStorage();
 
             // Pré-remplir les champs d'identification si restaurés
@@ -1128,7 +1298,7 @@
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 const isSelected = state.communeName === commune;
-                btn.className = `px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                btn.className = `px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
                     isSelected
                         ? 'bg-primary text-white border-primary shadow-sm scale-[1.02]'
                         : 'bg-slate-50 hover:bg-sky-50 text-slate-700 border-slate-200'
@@ -1203,10 +1373,86 @@
         }
 
         // =====================================================================
-        // RENDU DE LA ROUE VISUELLE (4 AXES AUX COINS + CAP CTG AU CENTRE)
+        // RENDU DES AXES :
+        // 1) SUR TÉLÉPHONE : 5 GROS BOUTONS EMPILÉS ULTRA-LISIBLES
+        // 2) SUR ORDINATEUR / VIDÉOPROJECTEUR : ROUE VISUELLE EN CONSTELLATION
         // =====================================================================
         function initThemesUI() {
             updateHeaderBadges();
+
+            // --- 1. RENDU MOBILE : 5 GROS BOUTONS EMPILÉS ---
+            const mobileList = document.getElementById('theme-mobile-list');
+            if (mobileList) {
+                mobileList.innerHTML = '';
+                const allMobileKeys = ['axe1', 'axe2', 'axe3', 'axe4', 'cap_ctg'];
+
+                allMobileKeys.forEach((key, idx) => {
+                    const cfg = AXES_CONFIG[key];
+                    const isDone = state.completedThemes.includes(key);
+                    const isCenter = key === 'cap_ctg';
+
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+
+                    if (isCenter) {
+                        btn.className = `w-full p-4 rounded-2xl border-2 text-left transition-all flex items-center justify-between gap-3 shadow-md active:scale-[0.98] ${
+                            isDone
+                                ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white border-emerald-400'
+                                : 'bg-gradient-to-r from-primary to-slate-900 text-white border-sky-300'
+                        }`;
+                        btn.innerHTML = `
+                            <div class="flex items-center gap-3.5 min-w-0">
+                                <div class="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center text-2xl shrink-0">🎯</div>
+                                <div class="min-w-0">
+                                    <div class="text-[11px] font-bold uppercase tracking-wider text-sky-200">Cœur de la consultation</div>
+                                    <div class="text-base font-extrabold leading-snug">Cap CTG 2027–2031</div>
+                                    <div class="text-xs text-sky-100/90">Nos grandes priorités du mandat</div>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1.5 rounded-xl text-xs font-extrabold shrink-0 ${
+                                isDone ? 'bg-white text-emerald-700' : 'bg-white text-slate-900'
+                            }">
+                                ${isDone ? '✓ Validé' : 'Voter →'}
+                            </span>
+                        `;
+                    } else {
+                        btn.className = `w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-center justify-between gap-3 shadow-sm active:scale-[0.98] ${
+                            isDone
+                                ? 'bg-emerald-50/90 border-emerald-400 text-emerald-950'
+                                : 'bg-white hover:bg-sky-50/50 border-slate-200 text-slate-900'
+                        }`;
+                        btn.innerHTML = `
+                            <div class="flex items-center gap-3.5 min-w-0">
+                                <div class="w-12 h-12 rounded-2xl ${isDone ? 'bg-emerald-100' : 'bg-sky-50'} flex items-center justify-center text-2xl shrink-0">${cfg.icon}</div>
+                                <div class="min-w-0">
+                                    <div class="text-[11px] font-extrabold uppercase tracking-wider ${isDone ? 'text-emerald-700' : 'text-primary'}">Axe ${idx + 1}</div>
+                                    <div class="text-base font-extrabold leading-snug text-slate-900">${cfg.shortTitle}</div>
+                                    <div class="text-xs text-slate-500">${cfg.subLabel}</div>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1.5 rounded-xl text-xs font-extrabold shrink-0 ${
+                                isDone
+                                    ? 'bg-emerald-600 text-white'
+                                    : 'bg-sky-100 text-primary_dark'
+                            }">
+                                ${isDone ? '✓ Validé' : 'Voter →'}
+                            </span>
+                        `;
+                    }
+
+                    btn.onclick = () => {
+                        if (isDone) {
+                            showToast(`✓ « ${cfg.shortTitle} » a déjà été validé.`);
+                            return;
+                        }
+                        startAxe(key);
+                    };
+
+                    mobileList.appendChild(btn);
+                });
+            }
+
+            // --- 2. RENDU DESKTOP / GRAND ÉCRAN : ROUE CONSTELLATION ---
             const circleContainer = document.getElementById('theme-circle');
             if (!circleContainer) return;
             circleContainer.innerHTML = '';
@@ -1309,8 +1555,9 @@
                     const colName = cloudIndex === 0 ? 'votes_q1' : 'votes_q2';
                     repData.forEach(row => {
                         const rawVotes = row[colName] || '';
-                        rawVotes.split('|').map(s => s.trim()).filter(Boolean).forEach(word => {
-                            if (counts[word] === undefined) counts[word] = 0;
+                        rawVotes.split('|').map(s => normalizeWordLabel(s)).filter(Boolean).forEach(word => {
+                            // Un mot ajouté par un élu démarre aussi avec une base de 1 + ses votes pour être sur un pied d'égalité visuel
+                            if (counts[word] === undefined) counts[word] = 1;
                             counts[word] += 1;
                         });
                     });
@@ -1322,7 +1569,7 @@
             // Ajouter les mots personnalisés ajoutés par l'utilisateur courant dans sa session locale
             const localCustom = state.customWordsByCloud[dbThemeKey] || [];
             localCustom.forEach(w => {
-                if (counts[w] === undefined) counts[w] = 0;
+                if (counts[w] === undefined) counts[w] = 1;
             });
 
             return counts;
@@ -1392,9 +1639,10 @@
                 const spread = Math.max(maxVotes - minVotes, 1);
                 const ratio = Math.min((effectiveCount - minVotes) / spread, 1);
 
+                // Police agrandie sur mobile pour une lisibilité parfaite
                 const isMobile = window.innerWidth < 640;
-                const minFont = isMobile ? 0.82 : 0.88;
-                const maxExtra = isMobile ? 0.42 : 0.65;
+                const minFont = isMobile ? 0.94 : 0.92;
+                const maxExtra = isMobile ? 0.36 : 0.60;
                 const fontSize = (minFont + (ratio * maxExtra)).toFixed(2);
 
                 const btn = document.createElement('button');
@@ -1411,7 +1659,7 @@
 
                 btn.innerHTML = `
                     <span>${isSelected ? '✓ ' : ''}${word}</span>
-                    <span class="text-[11px] px-2 py-0.5 rounded-full font-extrabold ${
+                    <span class="text-[11px] px-2 py-0.5 rounded-full font-extrabold shrink-0 ${
                         isSelected ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'
                     }">${effectiveCount}</span>
                 `;
@@ -1442,13 +1690,15 @@
             renderWordCloud();
         }
 
-        function addNewIdea() {
+        function addNewIdea(silentIfEmpty = false) {
             const input = document.getElementById('new_idea_input');
             const raw = input.value.trim();
             if (!raw) {
-                showToast("⚠️ Écrivez d'abord votre idée.");
-                input.focus();
-                return;
+                if (!silentIfEmpty) {
+                    showToast("⚠️ Écrivez d'abord votre idée.");
+                    input.focus();
+                }
+                return false;
             }
 
             const cleanIdea = raw.charAt(0).toUpperCase() + raw.slice(1);
@@ -1458,7 +1708,7 @@
 
             if (!wordCloudDB[dbThemeKey]) wordCloudDB[dbThemeKey] = {};
             if (wordCloudDB[dbThemeKey][cleanIdea] === undefined) {
-                wordCloudDB[dbThemeKey][cleanIdea] = 0;
+                wordCloudDB[dbThemeKey][cleanIdea] = 1;
             }
 
             if (!state.customWordsByCloud[dbThemeKey]) state.customWordsByCloud[dbThemeKey] = [];
@@ -1480,6 +1730,7 @@
             input.value = '';
             saveStateToStorage();
             renderWordCloud();
+            return true;
         }
 
         function backFromCloud() {
@@ -1490,9 +1741,14 @@
             }
         }
 
-        // Passage à l'étape suivante sans envoyer les votes en double en cours de route :
-        // Tout est sauvegardé dans localStorage et envoyé une seule fois à la validation de l'axe !
+        // Passage à l'étape suivante : si l'élu a tapé une idée dans le champ sans cliquer sur "+ Ajouter l'idée",
+        // on l'ajoute automatiquement pour ne jamais perdre sa saisie !
         function nextFromCloud() {
+            const pendingInput = document.getElementById('new_idea_input');
+            if (pendingInput && pendingInput.value.trim() !== '') {
+                addNewIdea(true);
+            }
+
             const axeCfg = AXES_CONFIG[state.currentAxeKey];
             saveStateToStorage();
             if (state.currentCloudStepIndex + 1 < axeCfg.clouds.length) {
@@ -1538,8 +1794,9 @@
             loadCloudStep(axeCfg.clouds.length - 1);
         }
 
-        // ENREGISTREMENT UNIQUE ET ATOMIQUE DE L'AXE
+        // ENREGISTREMENT UNIQUE, ATOMIQUE ET RAPIDE DE L'AXE
         async function saveAxeCompletion() {
+            if (window._isSavingAxe) return;
             const axeKey = state.currentAxeKey;
             const axeCfg = AXES_CONFIG[axeKey];
             if (!axeCfg) return;
@@ -1559,6 +1816,13 @@
                 ? state.selectedVotesByCloud[axeCfg.clouds[1].id]
                 : [];
 
+            if (votesQ1Arr.length === 0 && votesQ2Arr.length === 0 && !freeText) {
+                if (!confirm("Vous n'avez sélectionné aucune idée sur cet axe. Voulez-vous quand même le valider ?")) {
+                    return;
+                }
+            }
+
+            window._isSavingAxe = true;
             const btn = document.getElementById('btn-save-axe');
             const originalHtml = btn.innerHTML;
             btn.innerHTML = '<span>Enregistrement...</span>';
@@ -1576,16 +1840,22 @@
                 }]);
                 if (repErr) throw repErr;
 
-                // 2. Incrémenter aussi la table idees pour l'export CSV des nuages
+                // 2. Incrémenter en parallèle la table idees pour l'export CSV des nuages (5x plus rapide sur mobile)
+                const rpcPromises = [];
                 for (let i = 0; i < axeCfg.clouds.length; i++) {
                     const cloudId = axeCfg.clouds[i].id;
                     const chosen = state.selectedVotesByCloud[cloudId] || [];
                     for (const word of chosen) {
-                        await supabaseClient.rpc(RPC_VOTER, {
-                            p_theme: cloudId,
-                            p_mot: word
-                        });
+                        rpcPromises.push(
+                            supabaseClient.rpc(RPC_VOTER, {
+                                p_theme: cloudId,
+                                p_mot: word
+                            })
+                        );
                     }
+                }
+                if (rpcPromises.length > 0) {
+                    await Promise.allSettled(rpcPromises);
                 }
 
                 state.completedThemes.push(axeKey);
@@ -1599,8 +1869,9 @@
                 }
             } catch (err) {
                 console.error("Erreur enregistrement axe:", err);
-                showToast("❌ Erreur réseau lors de l'enregistrement.");
+                showToast("❌ Erreur réseau lors de l'enregistrement. Réessayez.");
             } finally {
+                window._isSavingAxe = false;
                 btn.innerHTML = originalHtml;
                 btn.disabled = false;
             }
@@ -1611,6 +1882,250 @@
         function closeQrModal() { document.getElementById('qr-fullscreen-modal').classList.remove('active'); }
         function openBilanModal() { document.getElementById('bilan-modal').classList.add('active'); }
         function closeBilanModal() { document.getElementById('bilan-modal').classList.remove('active'); }
+        function openPaperModal() { document.getElementById('paper-modal').classList.add('active'); }
+        function closePaperModal() { document.getElementById('paper-modal').classList.remove('active'); }
+
+        // =====================================================================
+        // SUPPORT PAPIER A4 RECTO-VERSO & SAISIE EXPRESS D'UNE FICHE PAPIER
+        // =====================================================================
+        function buildPrintablePaperSheet() {
+            const container = document.getElementById('printable-paper-sheet');
+            if (!container) return;
+
+            const renderCloudCheckboxes = (cloud) => `
+                <div style="margin-bottom: 6px;">
+                    <div style="font-weight: 800; font-size: 8.5pt; color: #0369a1; margin-bottom: 3px;">
+                        ${cloud.stepLabel} — ${cloud.question.replace(/<[^>]*>/g, '')} <span style="font-weight: 600; color: #475569;">(Cochez jusqu'à 5 choix)</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3px 12px;">
+                        ${cloud.seedWords.map(w => `
+                            <div style="display: flex; align-items: center; gap: 5px; font-size: 8.5pt;">
+                                <span style="display: inline-block; width: 11px; height: 11px; border: 1.5px solid #334155; border-radius: 2px; flex-shrink: 0;"></span>
+                                <span>${w}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top: 3px; font-size: 8pt; color: #475569;">
+                        Autre idée à ajouter : ........................................................................................................................................
+                    </div>
+                </div>
+            `;
+
+            const renderAxeBlock = (axeKey) => {
+                const cfg = AXES_CONFIG[axeKey];
+                return `
+                    <div style="border: 1.5px solid #94a3b8; border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; background: #ffffff;">
+                        <div style="font-weight: 800; font-size: 10pt; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 6px;">
+                            ${cfg.icon} ${cfg.title}
+                        </div>
+                        ${cfg.clouds.map(c => renderCloudCheckboxes(c)).join('')}
+                        <div style="margin-top: 4px; font-size: 8pt; color: #334155; border-top: 1px dashed #cbd5e1; padding-top: 4px;">
+                            <strong>Remarque libre / Précision :</strong> ........................................................................................................................
+                        </div>
+                    </div>
+                `;
+            };
+
+            container.innerHTML = `
+                <!-- PAGE 1 : RECTO -->
+                <div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #0284c7; padding-bottom: 6px; margin-bottom: 8px;">
+                        <img src="./logo-collectivite.png" alt="CCMVR" style="height: 42px; object-fit: contain;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 8pt; font-weight: 800; color: #0284c7; text-transform: uppercase;">Commission Enfance • Jeunesse • Solidarités • 08/10/2026</div>
+                            <div style="font-size: 13pt; font-weight: 800; color: #0f172a;">Plan de Mandat & Future CTG 2027–2031</div>
+                        </div>
+                        <img src="./logo-caf.png" alt="CAF" style="height: 42px; object-fit: contain;">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; font-size: 9pt;">
+                        <div><strong>Prénom et initiale du nom :</strong> ........................................................</div>
+                        <div><strong>Commune :</strong> ........................................................................</div>
+                    </div>
+
+                    <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; font-size: 8pt;">
+                        <strong>📊 Repères Bilan CTG 2022–2026 (2,66 M€ CAF) :</strong>
+                        <strong>Petite Enfance :</strong> 15 structures, +11,8 % d'heures mais 66 % d'occupation, natalité 7,5 ‰, SPPE •
+                        <strong>Enfance (3-11 ans) :</strong> 19 accueils stables, fragilité des bureaux associatifs, enjeu inclusion/handicap •
+                        <strong>Jeunesse (11-17 ans) :</strong> 6 accueils ados, baisse de fréquentation → offre à réinventer •
+                        <strong>Parentalité & Solidarités :</strong> Soutien parentalité (accompagnement scolarité, réflexion LAEP), Solidarités (animation vie sociale, accès aux droits, prévention), Observatoire.
+                    </div>
+
+                    ${renderAxeBlock('axe1')}
+                    ${renderAxeBlock('axe2')}
+                    <div style="text-align: right; font-size: 8pt; font-weight: 700; color: #64748b;">👉 Suite au verso (Axes 3, 4 et Cap CTG 2027–2031)</div>
+                </div>
+
+                <!-- PAGE 2 : VERSO -->
+                <div class="print-page-break">
+                    <div style="font-size: 9pt; font-weight: 800; color: #475569; margin-bottom: 8px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">
+                        Suite de la fiche • Commission Enfance-Jeunesse-Solidarités (08/10/2026) — CCMVR & CAF
+                    </div>
+                    ${renderAxeBlock('axe3')}
+                    ${renderAxeBlock('axe4')}
+                    ${renderAxeBlock('cap_ctg')}
+                    <div style="text-align: center; font-size: 8.5pt; font-weight: 700; color: #0f172a; margin-top: 8px; padding: 6px; background: #f0f9ff; border-radius: 8px; border: 1px solid #bae6fd;">
+                        🙏 Merci pour votre contribution ! Remettez cette fiche en fin de séance pour intégration directe aux nuages de mots.
+                    </div>
+                </div>
+            `;
+        }
+
+        function triggerPrintPaperSheet() {
+            buildPrintablePaperSheet();
+            window.print();
+        }
+
+        function initPaperExpressForm() {
+            const selectCommune = document.getElementById('paper_commune_name');
+            if (selectCommune) {
+                const allOptions = [...COMMUNES_CCMVR, "Autre / Échelle CC"];
+                selectCommune.innerHTML = '<option value="">-- Choisir la commune (optionnel) --</option>' +
+                    allOptions.map(c => `<option value="${c}">${c}</option>`).join('');
+            }
+
+            const container = document.getElementById('paper-express-axes-container');
+            if (!container) return;
+
+            const allKeys = ['axe1', 'axe2', 'axe3', 'axe4', 'cap_ctg'];
+            container.innerHTML = allKeys.map(axeKey => {
+                const cfg = AXES_CONFIG[axeKey];
+                return `
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="font-extrabold text-sm sm:text-base text-slate-900 mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                            <span>${cfg.icon}</span>
+                            <span>${cfg.title}</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                            ${cfg.clouds.map(cloud => `
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                                    <div class="text-[11px] font-extrabold text-primary uppercase mb-1">${cloud.stepLabel}</div>
+                                    <div class="text-xs font-bold text-slate-700 mb-2">${cloud.question}</div>
+                                    <div class="space-y-1.5">
+                                        ${cloud.seedWords.map(w => `
+                                            <label class="flex items-start gap-2 text-xs text-slate-800 cursor-pointer hover:bg-sky-50 p-1 rounded-lg">
+                                                <input type="checkbox" data-paper-cloud="${cloud.id}" value="${w.replace(/"/g, '&quot;')}"
+                                                    class="mt-0.5 w-4 h-4 accent-sky-600 rounded shrink-0">
+                                                <span class="font-medium leading-tight">${w}</span>
+                                            </label>
+                                        `).join('')}
+                                    </div>
+                                    <input type="text" data-paper-custom="${cloud.id}" placeholder="+ Autre idée manuscrite sur ce nuage (optionnel)"
+                                        class="mt-2 w-full text-xs px-2.5 py-1.5 border border-slate-200 rounded-lg bg-white">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div>
+                            <input type="text" data-paper-freetext="${axeKey}" placeholder="💬 Remarque libre manuscrite sur cet axe (optionnel)..."
+                                class="w-full text-xs px-3 py-2 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white">
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function resetPaperExpressForm() {
+            const nameInput = document.getElementById('paper_structure_name');
+            const commSelect = document.getElementById('paper_commune_name');
+            if (nameInput) nameInput.value = '';
+            if (commSelect) commSelect.value = '';
+            document.querySelectorAll('#paper-express-axes-container input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+            document.querySelectorAll('#paper-express-axes-container input[type="text"]').forEach(inp => { inp.value = ''; });
+        }
+
+        async function submitPaperExpressForm() {
+            if (window._isSubmittingPaper) return;
+            const nameInput = document.getElementById('paper_structure_name');
+            const commSelect = document.getElementById('paper_commune_name');
+            const participantName = (nameInput?.value || '').trim();
+            const communeName = (commSelect?.value || '').trim();
+
+            if (!participantName) {
+                showToast("⚠️ Indiquez le prénom/nom figurant sur la fiche papier.");
+                if (nameInput) nameInput.focus();
+                return;
+            }
+
+            const allKeys = ['axe1', 'axe2', 'axe3', 'axe4', 'cap_ctg'];
+            const rowsToInsert = [];
+            const rpcCalls = [];
+
+            allKeys.forEach(axeKey => {
+                const cfg = AXES_CONFIG[axeKey];
+                const cloudVotes = [];
+
+                cfg.clouds.forEach((cloud, idx) => {
+                    const checked = Array.from(document.querySelectorAll(`input[data-paper-cloud="${cloud.id}"]:checked`)).map(cb => cb.value);
+                    const customInput = document.querySelector(`input[data-paper-custom="${cloud.id}"]`);
+                    const customVal = (customInput?.value || '').trim();
+                    if (customVal) {
+                        const cleanCustom = customVal.charAt(0).toUpperCase() + customVal.slice(1);
+                        if (!checked.includes(cleanCustom)) checked.push(cleanCustom);
+                    }
+                    cloudVotes[idx] = checked;
+                    checked.forEach(w => {
+                        rpcCalls.push({ theme: cloud.id, mot: w });
+                    });
+                });
+
+                const freeTextInput = document.querySelector(`input[data-paper-freetext="${axeKey}"]`);
+                const freeText = (freeTextInput?.value || '').trim();
+
+                const v1 = cloudVotes[0] || [];
+                const v2 = cloudVotes[1] || [];
+
+                if (v1.length > 0 || v2.length > 0 || freeText) {
+                    rowsToInsert.push({
+                        structure_name: participantName,
+                        commune: communeName,
+                        theme: axeKey,
+                        point_fort: freeText,
+                        votes_q1: v1.join(' | '),
+                        votes_q2: v2.join(' | ')
+                    });
+                }
+            });
+
+            if (rowsToInsert.length === 0) {
+                showToast("⚠️ Cochez au moins une idée avant d'enregistrer la fiche.");
+                return;
+            }
+
+            window._isSubmittingPaper = true;
+            const btn = document.getElementById('btn-submit-paper');
+            const origHtml = btn.innerHTML;
+            btn.innerHTML = '<span>Enregistrement en cours...</span>';
+            btn.disabled = true;
+
+            try {
+                const { error: repErr } = await supabaseClient.from(TABLE_REPONSES).insert(rowsToInsert);
+                if (repErr) throw repErr;
+
+                if (rpcCalls.length > 0) {
+                    await Promise.allSettled(
+                        rpcCalls.map(c => supabaseClient.rpc(RPC_VOTER, { p_theme: c.theme, p_mot: c.mot }))
+                    );
+                }
+
+                showToast(`✅ Fiche papier de « ${participantName} » enregistrée (${rowsToInsert.length} axe(s)) !`);
+                resetPaperExpressForm();
+                closePaperModal();
+
+                if (document.getElementById('live-results-modal').classList.contains('active')) {
+                    await refreshLiveResults();
+                }
+                if (document.getElementById('admin-dashboard').classList.contains('active')) {
+                    await loadAdminAll();
+                }
+            } catch (err) {
+                console.error("Erreur saisie fiche papier:", err);
+                showToast("❌ Erreur réseau lors de l'enregistrement de la fiche papier.");
+            } finally {
+                window._isSubmittingPaper = false;
+                btn.innerHTML = origHtml;
+                btn.disabled = false;
+            }
+        }
 
         // =====================================================================
         // MODE RÉSULTATS EN DIRECT (BASÉ SUR LES LIGNES ACTIVES DE RÉPONSES)
@@ -1667,8 +2182,8 @@
                     const col = idx === 0 ? 'votes_q1' : 'votes_q2';
                     reponses.filter(r => r.theme === axeKey).forEach(r => {
                         const raw = r[col] || '';
-                        raw.split('|').map(s => s.trim()).filter(Boolean).forEach(w => {
-                            if (cloudMap[c.id][w] === undefined) cloudMap[c.id][w] = 0;
+                        raw.split('|').map(s => normalizeWordLabel(s)).filter(Boolean).forEach(w => {
+                            if (cloudMap[c.id][w] === undefined) cloudMap[c.id][w] = 1;
                             cloudMap[c.id][w] += 1;
                         });
                     });
@@ -1696,7 +2211,7 @@
                     totalElusVotes += (r.votes_q2 ? r.votes_q2.split('|').filter(s => s.trim()).length : 0);
                 });
 
-                const uniqueElus = new Set(reponses.map(r => r.structure_name)).size;
+                const uniqueElus = new Set(reponses.map(r => (r.structure_name || '').trim().toLowerCase()).filter(Boolean)).size;
 
                 const axesToShow = state.liveActiveTab === 'all'
                     ? ['cap_ctg', 'axe1', 'axe2', 'axe3', 'axe4']
@@ -1734,24 +2249,28 @@
 
                     cfg.clouds.forEach(c => {
                         const entries = Object.entries(cloudMap[c.id] || {}).sort((a, b) => b[1] - a[1]);
-                        const maxV = Math.max(...entries.map(e => e[1]), 1);
+                        const maxRealV = Math.max(...entries.map(e => Math.max(e[1] - 1, 0)), 1);
 
                         html += `
                             <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
                                 <div class="text-xs font-extrabold text-primary uppercase mb-1">${c.stepLabel}</div>
                                 <div class="text-xs sm:text-sm font-bold text-slate-800 mb-3">${c.question}</div>
-                                <div class="space-y-2">
-                                    ${entries.slice(0, 8).map(([mot, votes], idx) => {
-                                        const pct = Math.round((votes / maxV) * 100);
-                                        const realVotes = votes - (c.seedWords.includes(mot) ? 1 : 0);
+                                <div class="space-y-2.5">
+                                    ${entries.slice(0, 12).map(([mot, votes], idx) => {
+                                        const realVotes = Math.max(votes - 1, 0);
+                                        const pct = realVotes > 0 ? Math.max(Math.round((realVotes / maxRealV) * 100), 8) : 4;
+                                        const isCustom = !c.seedWords.includes(mot);
                                         return `
                                             <div>
-                                                <div class="flex justify-between text-xs font-bold mb-1">
-                                                    <span class="text-slate-800">${idx < 3 && realVotes > 0 ? '🏆 ' : ''}${mot}</span>
-                                                    <span class="text-primary_dark">${realVotes} vote(s) <span class="text-[10px] text-slate-400 font-normal">(poids ${votes})</span></span>
+                                                <div class="flex justify-between items-center gap-2 text-xs font-bold mb-1">
+                                                    <span class="text-slate-800">
+                                                        ${idx < 3 && realVotes > 0 ? '🏆 ' : ''}${mot}
+                                                        ${isCustom ? '<span class="ml-1 text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md">💡 Ajouté</span>' : ''}
+                                                    </span>
+                                                    <span class="text-primary_dark shrink-0">${realVotes} vote${realVotes > 1 ? 's' : ''}</span>
                                                 </div>
                                                 <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
-                                                    <div class="h-full bg-gradient-to-r from-primary to-sky-400 rounded-full" style="width:${pct}%"></div>
+                                                    <div class="h-full ${realVotes > 0 ? 'bg-gradient-to-r from-primary to-sky-400' : 'bg-slate-300'} rounded-full transition-all duration-300" style="width:${pct}%"></div>
                                                 </div>
                                             </div>
                                         `;

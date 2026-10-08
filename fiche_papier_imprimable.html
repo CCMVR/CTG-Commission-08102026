@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche Papier A4 Recto-Verso - Commission Enfance-Jeunesse-Solidarités (08/10/2026)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 20px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .no-print-bar {
+            max-width: 210mm;
+            margin: 0 auto 16px auto;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+        }
+
+        .btn-print {
+            background: #0284c7;
+            color: #ffffff;
+            border: none;
+            font-weight: 800;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-print:hover {
+            background: #0369a1;
+        }
+
+        .a4-page {
+            width: 210mm;
+            min-height: 296mm;
+            margin: 0 auto 20px auto;
+            background: #ffffff;
+            padding: 9mm 11mm;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .header-top {
+            display: grid;
+            grid-template-columns: 140px 1fr 140px;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2.5px solid #0284c7;
+            padding-bottom: 6px;
+            margin-bottom: 7px;
+        }
+
+        .header-top img {
+            height: 46px;
+            width: auto;
+            max-width: 135px;
+            object-fit: contain;
+            margin: 0 auto;
+        }
+
+        .header-title {
+            text-align: center;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 7.5pt;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 2px 8px;
+            border-radius: 99px;
+            margin-bottom: 2px;
+        }
+
+        .header-title h1 {
+            font-size: 13pt;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .id-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 6px 12px;
+            margin-bottom: 7px;
+            font-size: 9pt;
+        }
+
+        .reperes-box {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 6px 10px;
+            margin-bottom: 8px;
+            font-size: 7.8pt;
+            line-height: 1.32;
+        }
+
+        .axe-card {
+            border: 1.5px solid #94a3b8;
+            border-radius: 9px;
+            padding: 7px 10px;
+            margin-bottom: 7px;
+            background: #ffffff;
+        }
+
+        .axe-card.cap-card {
+            border: 2px solid #0284c7;
+            background: #f0f9ff;
+        }
+
+        .axe-header {
+            font-size: 10pt;
+            font-weight: 800;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 3px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cloud-block {
+            margin-bottom: 5px;
+        }
+
+        .cloud-q {
+            font-size: 8.3pt;
+            font-weight: 800;
+            color: #0369a1;
+            margin-bottom: 3px;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5px 12px;
+        }
+
+        .cb-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 8.2pt;
+            line-height: 1.22;
+        }
+
+        .cb-square {
+            display: inline-block;
+            width: 11px;
+            height: 11px;
+            border: 1.5px solid #1e293b;
+            border-radius: 2px;
+            flex-shrink: 0;
+            background: #ffffff;
+        }
+
+        .line-other {
+            font-size: 7.8pt;
+            color: #475569;
+            margin-top: 2.5px;
+        }
+
+        .line-free {
+            font-size: 8pt;
+            color: #1e293b;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 3.5px;
+            margin-top: 3.5px;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 6mm 8mm;
+            }
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+            .no-print-bar {
+                display: none !important;
+            }
+            .a4-page {
+                width: 100%;
+                min-height: auto;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .page-break {
+                page-break-before: always;
+                break-before: page;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="no-print-bar">
+        <div>
+            <div style="font-weight: 800; font-size: 15px;">🖨️ Fiche Papier A4 Recto-Verso — Commission du 08/10/2026</div>
+            <div style="font-size: 12px; color: #cbd5e1;">Prête à imprimer en Recto-Verso (2 pages A4) pour les élus souhaitant répondre sur papier.</div>
+        </div>
+        <button type="button" class="btn-print" onclick="window.print()">🖨️ Imprimer maintenant (A4)</button>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 1 (RECTO) : IDENTIFICATION + REPÈRES + AXE 1 + AXE 2           -->
+    <!-- =================================================================== -->
+    <div class="a4-page">
+        <div>
+            <div class="header-top">
+                <img src="./logo-collectivite.png" alt="Logo CCMVR">
+                <div class="header-title">
+                    <div class="header-badge">Commission Enfance • Jeunesse • Solidarités • 08/10/2026</div>
+                    <h1>Plan de Mandat & Future CTG 2027–2031</h1>
+                </div>
+                <img src="./logo-caf.png" alt="Logo CAF Haute-Loire">
+            </div>
+
+            <div class="id-box">
+                <div><strong>Prénom et initiale du nom :</strong> ........................................................</div>
+                <div><strong>Commune :</strong> ........................................................................</div>
+            </div>
+
+            <div class="reperes-box">
+                <strong>📊 Repères Clés Bilan CTG 2022–2026 (2,66 M€ d'aides CAF) :</strong><br>
+                • <strong>Petite Enfance & SPPE (1,73 M€ CAF) :</strong> 15 structures, +11,8 % d'heures mais 66 % d'occupation, baisse natalité (7,5 ‰), Autorité Organisatrice SPPE.<br>
+                • <strong>Enfance 3-11 ans :</strong> 9 périscolaires, 10 extrascolaires, fréquentation stable, fragilité des bureaux associatifs, enjeu inclusion/handicap.<br>
+                • <strong>Jeunesse 11-17 ans :</strong> 6 accueils ados, Référent Jeunesse (0,5 ETP), baisse de fréquentation des accueils ados → une offre à réinventer.<br>
+                • <strong>Parentalité & Solidarités :</strong> Soutien à la parentalité (accompagnement scolarité, réflexion LAEP) • Solidarités : animation de la vie sociale, accès aux droits, prévention • Observatoire.
+            </div>
+
+            <!-- AXE 1 -->
+            <div class="axe-card">
+                <div class="axe-header">
+                    <span>🔄 1. Adapter nos services aux besoins des habitants</span>
+                    <span style="font-size: 7.5pt; color: #0369a1;">Jusqu'à 5 choix par question</span>
+                </div>
+
+                <div class="cloud-block">
+                    <div class="cloud-q">1.1 — Que devons-nous absolument PRÉSERVER ou PRIORISER dans nos services ?</div>
+                    <div class="checkbox-grid">
+                        <div class="cb-item"><span class="cb-square"></span><span>Maillage crèches & ALSH</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Inclusion & accueil handicap</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Guichet Unique & RPE</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Soutien à la parentalité</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Animation de la vie sociale</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Accès aux droits & publics fragiles</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Prévention & écoute jeunes (PAEJ)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Tarifs accessibles aux familles</span></div>
+                    </div>
+                    <div class="line-other">+ Autre idée : .....................................................................................................................................................</div>
+                </div>
+
+                <div class="cloud-block">
+                    <div class="cloud-q">1.2 — Qu'est-ce qui doit ÉVOLUER ou ÊTRE ADAPTÉ face aux réalités actuelles (évolution démographique, fréquentation des ados, rythmes des familles...) ?</div>
+                    <div class="checkbox-grid">
+                        <div class="cb-item"><span class="cb-square"></span><span>Réinventer l'offre Ados (11-17 ans)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Ajuster les places à la natalité</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Aller-vers & actions hors les murs</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Créer un Lieu Ressource / LAEP</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Souplesse des horaires d'accueil</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Valoriser le métier d'Assmat</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Prévention (écrans, harcèlement, CISPD)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>S'appuyer sur l'Observatoire</span></div>
+                    </div>
+                    <div class="line-other">+ Autre idée : .....................................................................................................................................................</div>
+                </div>
+
+                <div class="line-free"><strong>💬 Vos constats ou précisions sur l'Axe 1 :</strong> ......................................................................................................................</div>
+            </div>
+
+            <!-- AXE 2 -->
+            <div class="axe-card">
+                <div class="axe-header">
+                    <span>🤝 2. Cultiver les coopérations et les mutualisations</span>
+                    <span style="font-size: 7.5pt; color: #0369a1;">Jusqu'à 5 choix par question</span>
+                </div>
+
+                <div class="cloud-block">
+                    <div class="cloud-q">2.1 — Quels services ou moyens gagneraient à être davantage COORDONNÉS ou MUTUALISÉS à l'échelle communautaire ?</div>
+                    <div class="checkbox-grid">
+                        <div class="cb-item"><span class="cb-square"></span><span>Appui administratif & RH aux assos</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Mutualisation matériel & minibus</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Formation commune des équipes</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Projets communs inter-ALSH</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Vivier / remplacement d'animateurs</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Programmation parentalité commune</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Mutualisation d'intervenants</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Outils de gestion partagés</span></div>
+                    </div>
+                    <div class="line-other">+ Autre idée : .....................................................................................................................................................</div>
+                </div>
+
+                <div class="cloud-block">
+                    <div class="cloud-q">2.2 — Que pourrait-on MIEUX FAIRE COLLECTIVEMENT (CCMVR, communes, associations, partenaires) ?</div>
+                    <div class="checkbox-grid">
+                        <div class="cb-item"><span class="cb-square"></span><span>Soutenir les bureaux associatifs</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Rôle actif des élus référents</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Lien Écoles / Périscolaire / ALSH</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Solidarités (vie sociale, accès aux droits, prévention)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Attractivité des métiers & BAFA</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Parcours handicap (DAHLIR, PMI)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Partage de locaux communaux</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Harmoniser les pratiques & critères</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Coopération CAF / Département / CC</span></div>
+                    </div>
+                    <div class="line-other">+ Autre idée : .....................................................................................................................................................</div>
+                </div>
+
+                <div class="line-free"><strong>💬 Vos pistes sur l'Axe 2 :</strong> .........................................................................................................................................</div>
+            </div>
+        </div>
+
+        <div style="text-align: right; font-size: 8pt; font-weight: 800; color: #475569;">
+            👉 Tournez la page (Verso : Axes 3, 4 et Cap CTG 2027–2031)
+        </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 2 (VERSO) : AXE 3 + AXE 4 + CAP CTG 2027-2031                  -->
+    <!-- =================================================================== -->
+    <div class="a4-page page-break">
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 7px; font-size: 8.5pt; font-weight: 800; color: #475569;">
+                <span>Commission Enfance • Jeunesse • Solidarités (08/10/2026) — CCMVR & CAF</span>
+                <span>Page 2 / 2 (Verso)</span>
+            </div>
+
+            <!-- AXE 3 -->
+            <div class="axe-card">
+                <div class="axe-header">
+                    <span>🏘️ 3. Agir pour l'avenir et la vitalité des bourgs</span>
+                    <span style="font-size: 7.5pt; color: #0369a1;">Jusqu'à 5 choix par question</span>
+                </div>
+
+                <div class="cloud-block">
+                    <div class="cloud-q">3.1 — Quels services sont les plus ESSENTIELS pour permettre aux familles et aux jeunes de vivre et s'installer dans nos bourgs ?</div>
+                    <div class="checkbox-grid">
+                        <div class="cb-item"><span class="cb-square"></span><span>Périscolaire & cantine de proximité</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Solutions de garde (Crèches, MAM, Assmat)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Lieux et animations pour les jeunes</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Mobilité vers les accueils et loisirs</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Accès aux droits (France Services)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Lien avec assos sportives & culturelles</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Logement adapté aux jeunes familles</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Maintien des écoles de village</span></div>
+                    </div>
+                    <div class="line-other">+ Autre idée : .....................................................................................................................................................</div>
+                </div>
+
+                <div class="cloud-block">
+                    <div class="cloud-q">3.2 — Quelles adaptations permettent de soutenir l'équité et la vitalité de TOUTES les communes ?</div>
+                    <div class="checkbox-grid">
+                        <div class="cb-item"><span class="cb-square"></span><span>Services itinérants (RPE, ludothèque, LAEP)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Soutenir l'installation d'Assmat / MAM</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Navettes / mobilité des jeunes</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Animations hors les murs dans les bourgs</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Pôles d'accueil équilibrés sur la CC</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Solidarités de proximité (vie sociale, accès aux droits, prévention)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Accompagner les communes rurales</span></div>
+                    </div>
+                    <div class="line-other">+ Autre idée : .....................................................................................................................................................</div>
+                </div>
+
+                <div class="line-free"><strong>💬 Votre regard sur l'Axe 3 :</strong> .......................................................................................................................................</div>
+            </div>
+
+            <!-- AXE 4 -->
+            <div class="axe-card">
+                <div class="axe-header">
+                    <span>💬 4. Développer culture et sentiment d'appartenance communautaires</span>
+                    <span style="font-size: 7.5pt; color: #0369a1;">Jusqu'à 5 choix par question</span>
+                </div>
+
+                <div class="cloud-block">
+                    <div class="cloud-q">4.1 — Que faire pour que les habitants IDENTIFIENT DAVANTAGE ce qui est porté à l'échelle communautaire ?</div>
+                    <div class="checkbox-grid">
+                        <div class="cb-item"><span class="cb-square"></span><span>Temps forts fédérateurs (Semaine Bleue...)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Guide / Portail unique des services Familles</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Rencontres annuelles Élus & Associations</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Commissions délocalisées dans les communes</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Communication claire sur le rôle de la CC</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Forum / Fête intercommunale des familles</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Impliquer les jeunes dans la vie locale</span></div>
+                    </div>
+                    <div class="line-other">+ Autre idée : .....................................................................................................................................................</div>
+                </div>
+
+                <div class="cloud-block">
+                    <div class="cloud-q">4.2 — Quelle pratique renforcerait le mieux le sentiment d'appartenance entre les communes et la CCMVR ?</div>
+                    <div class="checkbox-grid">
+                        <div class="cb-item"><span class="cb-square"></span><span>Relais dans les bulletins municipaux</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Temps annuel de bilan & convivialité</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Binômes Élus référents / Associations</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Partage des données de l'Observatoire</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Réunions courtes orientées décisions</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Visites de terrain des structures CC</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Culture commune autour du SPPE & CTG</span></div>
+                    </div>
+                    <div class="line-other">+ Autre idée : .....................................................................................................................................................</div>
+                </div>
+
+                <div class="line-free"><strong>💬 Vos suggestions sur l'Axe 4 :</strong> ...................................................................................................................................</div>
+            </div>
+
+            <!-- CAP CTG 2027-2031 -->
+            <div class="axe-card cap-card">
+                <div class="axe-header" style="border-bottom-color: #bae6fd;">
+                    <span>🎯 LE CAP POLITIQUE DE LA FUTURE CTG 2027–2031 (Cœur de la consultation)</span>
+                    <span style="font-size: 7.5pt; color: #0369a1;">Jusqu'à 5 choix</span>
+                </div>
+
+                <div class="cloud-block">
+                    <div class="cloud-q">Quelles sont vos grandes priorités politiques (jusqu'à 5 choix) pour la CTG 2027–2031 ?</div>
+                    <div class="checkbox-grid">
+                        <div class="cb-item"><span class="cb-square"></span><span>Consolider et pérenniser l'offre existante</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Refonder la politique Jeunesse (11-17 ans)</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Déployer le Service Public Petite Enfance</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Soutenir et sécuriser les associations</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Structurer Parentalité & Inclusion</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Adapter l'offre à la démographie & au budget</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Renforcer l'équité et la mobilité</span></div>
+                        <div class="cb-item"><span class="cb-square"></span><span>Développer les solidarités (vie sociale, accès aux droits, prévention)</span></div>
+                    </div>
+                    <div class="line-other">+ Autre priorité : .................................................................................................................................................</div>
+                </div>
+
+                <div class="line-free" style="border-top-color: #93c5fd;">
+                    <strong>💬 En une phrase, qu'aimeriez-vous que la future CTG permette d'améliorer concrètement pour les habitants ?</strong><br>
+                    ....................................................................................................................................................................................<br>
+                    ....................................................................................................................................................................................
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; font-size: 8.5pt; font-weight: 700; color: #0369a1; background: #e0f2fe; padding: 6px; border-radius: 7px;">
+            🙏 Merci pour votre contribution ! Remettez cette fiche en fin de séance pour intégration directe aux nuages de mots.
+        </div>
+    </div>
+
+</body>
+
+</html>
