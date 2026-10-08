@@ -85,13 +85,13 @@
             user-select: none;
         }
 
-        .theme-node:hover:not(.completed) {
+        .theme-node:hover {
             transform: translate(-50%, -50%) scale(1.08);
             box-shadow: 0 18px 32px -5px rgba(2, 132, 199, 0.28);
             border-color: #0284c7 !important;
         }
 
-        .theme-node:active:not(.completed) {
+        .theme-node:active {
             transform: translate(-50%, -50%) scale(0.96);
         }
 
@@ -99,7 +99,12 @@
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
             border-color: #22c55e !important;
             color: #15803d;
-            cursor: default;
+            cursor: pointer;
+        }
+
+        .theme-node.completed:hover {
+            border-color: #16a34a !important;
+            box-shadow: 0 18px 32px -5px rgba(22, 163, 74, 0.28);
         }
 
         .theme-node-center {
@@ -122,6 +127,7 @@
             background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
             color: white;
             border-color: #bbf7d0 !important;
+            cursor: pointer;
         }
 
         /* Adaptation parfaite de la roue sur écran de téléphone */
@@ -415,8 +421,12 @@
                             Prénom et initiale du nom <span class="text-red-500">*</span>
                         </label>
                         <input type="text" id="structure_name" placeholder="Ex : Marie D."
+                            onkeypress="if(event.key === 'Enter') { event.preventDefault(); validateIdentification(); }"
                             class="w-full text-base sm:text-lg px-4 py-3 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-primary transition-all font-medium"
                             required>
+                        <p class="text-[11px] sm:text-xs text-slate-500 mt-1.5">
+                            💡 <strong>Déjà participé ou page fermée ?</strong> Saisissez le même prénom et initiale pour retrouver automatiquement vos axes validés et compléter vos votes.
+                        </p>
                     </div>
 
                     <div>
@@ -434,9 +444,9 @@
                         class="py-3 px-5 rounded-xl text-slate-500 hover:bg-slate-100 font-semibold text-sm">
                         Retour
                     </button>
-                    <button type="button" onclick="validateIdentification()"
+                    <button type="button" id="btn-validate-id" onclick="validateIdentification()"
                         class="bg-slate-900 hover:bg-primary text-white font-bold py-3.5 px-8 rounded-full shadow-md transition-all flex items-center gap-2 text-sm sm:text-base">
-                        <span>Suivant</span>
+                        <span id="btn-validate-id-label">Suivant</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
@@ -982,9 +992,10 @@
                             'Réinventer l\'offre Ados (11-17 ans)',
                             'Ajuster les places à la natalité',
                             'Aller-vers & actions hors les murs',
-                            'Créer un Lieu Ressource / LAEP',
+                            'Créer un lieu ressource / parentalité',
                             'Souplesse des horaires d\'accueil',
-                            'Valoriser le métier d\'Assmat',
+                            'Valoriser le métier d\'Assmat / MAM',
+                            'Accompagner les parents avec les contrats Assmat',
                             'Prévention (écrans, harcèlement, CISPD)',
                             'S\'appuyer sur l\'Observatoire'
                         ]
@@ -1013,7 +1024,8 @@
                             'Mutualisation matériel & minibus',
                             'Formation commune des équipes',
                             'Projets communs inter-ALSH',
-                            'Vivier / remplacement d\'animateurs',
+                            'Lien avec les CCAS du territoire',
+                            'Créer des appels à projets thématiques / CCMVR',
                             'Programmation parentalité commune',
                             'Mutualisation d\'intervenants',
                             'Outils de gestion partagés'
@@ -1073,9 +1085,7 @@
                             'Soutenir l\'installation d\'Assmat / MAM',
                             'Navettes / mobilité des jeunes',
                             'Animations hors les murs dans les bourgs',
-                            'Pôles d\'accueil équilibrés sur la CC',
-                            'Solidarités de proximité (vie sociale, accès aux droits, prévention)',
-                            'Accompagner les communes rurales'
+                            'Solidarités de proximité (vie sociale, accès aux droits, prévention)'
                         ]
                     }
                 ],
@@ -1142,7 +1152,7 @@
                             'Consolider et pérenniser l\'offre existante',
                             'Refonder la politique Jeunesse (11-17 ans)',
                             'Déployer le Service Public Petite Enfance',
-                            'Soutenir et sécuriser les associations',
+                            'Soutenir et sécuriser les structures d\'accueil',
                             'Structurer Parentalité & Inclusion',
                             'Adapter l\'offre à la démographie & au budget',
                             'Renforcer l\'équité et la mobilité',
@@ -1225,12 +1235,97 @@
             }
         }
 
+        // Normalise le nom d'un participant (ignore majuscules/minuscules, accents, espaces multiples et point final)
+        // Ex: "Marie D.", "marie d", "MARIE D." -> "marie d"
+        function normalizeParticipantKey(name) {
+            return (name || '')
+                .trim()
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/\./g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        // Recherche dans Supabase toutes les réponses déjà enregistrées par cet élu (même s'il a tout fermé ou changé d'appareil)
+        // et restaure automatiquement ses axes validés, ses votes par nuage, sa commune et ses remarques libres.
+        async function restoreParticipantHistoryFromDB(participantName) {
+            const targetKey = normalizeParticipantKey(participantName);
+            if (!targetKey) return 0;
+
+            try {
+                const { data: allRows, error } = await supabaseClient
+                    .from(TABLE_REPONSES)
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error || !allRows) return 0;
+
+                const { activeRows } = deduplicateLatestReponses(allRows);
+                const myRows = activeRows.filter(r => normalizeParticipantKey(r.structure_name) === targetKey);
+
+                if (myRows.length > 0) {
+                    // Conserver l'orthographe exacte d'origine ou celle saisie
+                    state.structureName = myRows[0].structure_name || participantName.trim();
+
+                    // Si l'élu n'a pas re-sélectionné sa commune mais qu'elle figurait dans ses réponses précédentes, la restaurer
+                    const savedCommune = (myRows.find(r => r.commune && r.commune.trim()) || {}).commune;
+                    if (!state.communeName && savedCommune) {
+                        state.communeName = savedCommune.trim();
+                        const commInput = document.getElementById('commune_name');
+                        if (commInput) commInput.value = state.communeName;
+                        const badge = document.getElementById('selected-commune-badge');
+                        if (badge) {
+                            badge.textContent = '✓ ' + state.communeName;
+                            badge.classList.remove('hidden');
+                        }
+                        renderCommunesChips();
+                    }
+
+                    // Reconstruire les axes complétés, les votes cochés et les textes libres
+                    const restoredThemes = new Set(state.completedThemes || []);
+                    myRows.forEach(row => {
+                        const axeKey = row.theme;
+                        const axeCfg = AXES_CONFIG[axeKey];
+                        if (!axeCfg) return;
+
+                        restoredThemes.add(axeKey);
+
+                        if (axeCfg.clouds[0]) {
+                            state.selectedVotesByCloud[axeCfg.clouds[0].id] = (row.votes_q1 || '')
+                                .split('|').map(s => normalizeWordLabel(s)).filter(Boolean);
+                        }
+                        if (axeCfg.clouds[1]) {
+                            state.selectedVotesByCloud[axeCfg.clouds[1].id] = (row.votes_q2 || '')
+                                .split('|').map(s => normalizeWordLabel(s)).filter(Boolean);
+                        }
+                        if (row.point_fort && row.point_fort.trim()) {
+                            state.freeTextByAxe[axeKey] = row.point_fort.trim();
+                        }
+                    });
+
+                    state.completedThemes = Array.from(restoredThemes);
+                    saveStateToStorage();
+                    return myRows.length;
+                }
+            } catch (e) {
+                console.warn("Erreur restauration historique participant:", e);
+            }
+            return 0;
+        }
+
         // --- INITIALISATION AU CHARGEMENT ---
         window.addEventListener('DOMContentLoaded', async () => {
             renderQrCodes();
             buildPrintablePaperSheet();
             initPaperExpressForm();
             const restored = loadStateFromStorage();
+
+            // Si un nom est déjà en mémoire locale, synchroniser ses réponses avec Supabase
+            if (state.structureName) {
+                await restoreParticipantHistoryFromDB(state.structureName);
+            }
 
             // Pré-remplir les champs d'identification si restaurés
             if (state.structureName) {
@@ -1349,7 +1444,7 @@
             }
         }
 
-        function validateIdentification() {
+        async function validateIdentification() {
             const input = document.getElementById('structure_name');
             const val = input.value.trim();
             if (!val) {
@@ -1359,9 +1454,33 @@
                 return;
             }
             input.classList.remove('border-red-500');
+
+            // Si l'utilisateur change de nom sur le même appareil, réinitialiser d'abord l'état local
+            if (normalizeParticipantKey(state.structureName) !== normalizeParticipantKey(val)) {
+                state.completedThemes = [];
+                state.selectedVotesByCloud = {};
+                state.customWordsByCloud = {};
+                state.freeTextByAxe = {};
+            }
+
             state.structureName = val;
+
+            const btn = document.getElementById('btn-validate-id');
+            const btnLabel = document.getElementById('btn-validate-id-label');
+            if (btn) btn.disabled = true;
+            if (btnLabel) btnLabel.textContent = 'Vérification...';
+
+            const restoredAxesCount = await restoreParticipantHistoryFromDB(val);
+
+            if (btn) btn.disabled = false;
+            if (btnLabel) btnLabel.textContent = 'Suivant';
+
             saveStateToStorage();
             goToStep('step-themes');
+
+            if (restoredAxesCount > 0) {
+                showToast(`👋 Bon retour ${state.structureName} ! Vos ${restoredAxesCount} axe(s) déjà validé(s) ont été retrouvés.`);
+            }
         }
 
         function showToast(msg) {
@@ -1412,7 +1531,7 @@
                             <span class="px-3 py-1.5 rounded-xl text-xs font-extrabold shrink-0 ${
                                 isDone ? 'bg-white text-emerald-700' : 'bg-white text-slate-900'
                             }">
-                                ${isDone ? '✓ Validé' : 'Voter →'}
+                                ${isDone ? '✓ Validé • Modifier' : 'Voter →'}
                             </span>
                         `;
                     } else {
@@ -1435,16 +1554,12 @@
                                     ? 'bg-emerald-600 text-white'
                                     : 'bg-sky-100 text-primary_dark'
                             }">
-                                ${isDone ? '✓ Validé' : 'Voter →'}
+                                ${isDone ? '✓ Validé • Modifier' : 'Voter →'}
                             </span>
                         `;
                     }
 
                     btn.onclick = () => {
-                        if (isDone) {
-                            showToast(`✓ « ${cfg.shortTitle} » a déjà été validé.`);
-                            return;
-                        }
                         startAxe(key);
                     };
 
@@ -1481,13 +1596,9 @@
             centerNode.innerHTML = `
                 <div class="node-icon text-3xl mb-1">🎯</div>
                 <div class="node-title text-xs sm:text-sm font-extrabold leading-tight px-1">CAP CTG<br>2027–2031</div>
-                <div class="node-sub text-[10px] font-semibold opacity-90 mt-1">${isCenterDone ? '✓ Validé' : 'Nos priorités'}</div>
+                <div class="node-sub text-[10px] font-semibold opacity-90 mt-1">${isCenterDone ? '✓ Validé (Modifier)' : 'Nos priorités'}</div>
             `;
             centerNode.onclick = () => {
-                if (isCenterDone) {
-                    showToast("✓ Vous avez déjà validé le Cap CTG (vos votes sont enregistrés).");
-                    return;
-                }
                 startAxe('cap_ctg');
             };
             circleContainer.appendChild(centerNode);
@@ -1507,24 +1618,86 @@
                 node.innerHTML = `
                     <div class="node-icon text-2xl sm:text-3xl mb-1">${cfg.icon}</div>
                     <div class="node-title text-xs font-extrabold leading-tight text-slate-800 px-1">${cfg.shortTitle}</div>
-                    <div class="node-sub text-[10px] text-slate-500 mt-0.5">${isDone ? '✓ Validé' : cfg.subLabel}</div>
-                    ${isDone ? '<div class="absolute -top-1 -right-1 bg-emerald-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow">✓</div>' : ''}
+                    <div class="node-sub text-[10px] text-slate-500 mt-0.5">${isDone ? '✓ Validé (Modifier)' : cfg.subLabel}</div>
+                    ${isDone ? '<div class="absolute -top-1 -right-1 bg-emerald-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow">✎</div>' : ''}
                 `;
                 node.onclick = () => {
-                    if (isDone) {
-                        showToast(`✓ L'axe « ${cfg.shortTitle} » a déjà été validé.`);
-                        return;
-                    }
                     startAxe(key);
                 };
                 circleContainer.appendChild(node);
             });
         }
 
-        // --- DÉMARRAGE D'UN AXE ---
-        function startAxe(axeKey) {
+        // =====================================================================
+        // DÉDUPLICATION AUTOMATIQUE (ZÉRO SQL À TOUCHER) :
+        // Ne conserve que la DERNIÈRE validation en date de chaque élu par axe.
+        // Ainsi, si un élu revient sur un axe déjà validé et modifie ses choix,
+        // sa nouvelle validation remplace immédiatement l'ancienne partout !
+        // =====================================================================
+        function deduplicateLatestReponses(rows) {
+            if (!Array.isArray(rows)) return { activeRows: [], supersededRows: [] };
+            const sorted = [...rows].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+            const seen = new Set();
+            const activeRows = [];
+            const supersededRows = [];
+
+            sorted.forEach(row => {
+                const normName = normalizeParticipantKey(row.structure_name);
+                const normTheme = (row.theme || '').trim();
+                const key = `${normName}::${normTheme}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    activeRows.push(row);
+                } else {
+                    supersededRows.push(row);
+                }
+            });
+
+            return { activeRows, supersededRows };
+        }
+
+        // --- DÉMARRAGE OU RÉOUVERTURE D'UN AXE ---
+        async function startAxe(axeKey) {
             state.currentAxeKey = axeKey;
             state.currentCloudStepIndex = 0;
+
+            // Si l'élu rouvre un axe mais que ses choix précédents n'étaient pas en mémoire locale
+            // (ex: s'il a changé de navigateur avec le même nom), on les restaure depuis sa dernière réponse !
+            const axeCfg = AXES_CONFIG[axeKey];
+            const c0 = axeCfg?.clouds[0]?.id;
+            const hasLocalSelection = c0 && state.selectedVotesByCloud[c0] && state.selectedVotesByCloud[c0].length > 0;
+
+            if (state.structureName && !hasLocalSelection) {
+                try {
+                    const { data: userRows } = await supabaseClient
+                        .from(TABLE_REPONSES)
+                        .select('*')
+                        .eq('theme', axeKey)
+                        .order('created_at', { ascending: false });
+
+                    const normCurrent = normalizeParticipantKey(state.structureName);
+                    const latestMine = (userRows || []).find(r => normalizeParticipantKey(r.structure_name) === normCurrent);
+                    if (latestMine) {
+                        if (axeCfg.clouds[0]) {
+                            state.selectedVotesByCloud[axeCfg.clouds[0].id] = (latestMine.votes_q1 || '')
+                                .split('|').map(s => normalizeWordLabel(s)).filter(Boolean);
+                        }
+                        if (axeCfg.clouds[1]) {
+                            state.selectedVotesByCloud[axeCfg.clouds[1].id] = (latestMine.votes_q2 || '')
+                                .split('|').map(s => normalizeWordLabel(s)).filter(Boolean);
+                        }
+                        if (latestMine.point_fort && !state.freeTextByAxe[axeKey]) {
+                            state.freeTextByAxe[axeKey] = latestMine.point_fort;
+                        }
+                        if (!state.completedThemes.includes(axeKey)) {
+                            state.completedThemes.push(axeKey);
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Info restauration choix précédents:", e);
+                }
+            }
+
             saveStateToStorage();
             loadCloudStep(0);
         }
@@ -1535,30 +1708,43 @@
         }
 
         // =====================================================================
-        // CALCUL DYNAMIQUE DES VOTES DEPUIS LES RÉPONSES ACTIVES
+        // CALCUL DYNAMIQUE DES VOTES DEPUIS LES RÉPONSES ACTIVES DÉDUPLIQUÉES
         // Garantit à 100 % que :
-        // 1) Aucun vote en cours de route (page rafraîchie) n'est compté en double
-        // 2) Toute ligne supprimée dans l'Admin supprime immédiatement ses votes !
+        // 1) Seule la dernière validation de chaque élu est comptée
+        // 2) Quand un élu rouvre son axe pour modifier ses votes, ses propres
+        //    anciens votes en base sont exclus du compteur de base (puisque ses
+        //    choix cochés à l'écran ajoutent déjà +1 en direct) → zéro doublon !
         // =====================================================================
         async function fetchAccurateCloudCounts(dbThemeKey, axeKey, cloudIndex, seedWords) {
             const counts = {};
             seedWords.forEach(w => { counts[w] = 1; });
 
+            const currentUserKey = normalizeParticipantKey(state.structureName);
+
             try {
-                // Lire les réponses actives de cet axe
                 const { data: repData, error: repErr } = await supabaseClient
                     .from(TABLE_REPONSES)
-                    .select('votes_q1, votes_q2')
-                    .eq('theme', axeKey);
+                    .select('id, created_at, structure_name, theme, votes_q1, votes_q2')
+                    .eq('theme', axeKey)
+                    .order('created_at', { ascending: false });
 
                 if (!repErr && repData) {
+                    const { activeRows } = deduplicateLatestReponses(repData);
                     const colName = cloudIndex === 0 ? 'votes_q1' : 'votes_q2';
-                    repData.forEach(row => {
+
+                    activeRows.forEach(row => {
+                        const rowUserKey = normalizeParticipantKey(row.structure_name);
+                        const isCurrentUserRow = currentUserKey && rowUserKey === currentUserKey;
                         const rawVotes = row[colName] || '';
+
                         rawVotes.split('|').map(s => normalizeWordLabel(s)).filter(Boolean).forEach(word => {
-                            // Un mot ajouté par un élu démarre aussi avec une base de 1 + ses votes pour être sur un pied d'égalité visuel
+                            // S'assurer que toute idée ajoutée par n'importe quel élu existe dans le nuage (base 1)
                             if (counts[word] === undefined) counts[word] = 1;
-                            counts[word] += 1;
+                            // N'incrémenter le compteur de base que pour les AUTRES élus,
+                            // car les choix de l'élu courant sont ajoutés en direct via state.selectedVotesByCloud !
+                            if (!isCurrentUserRow) {
+                                counts[word] += 1;
+                            }
                         });
                     });
                 }
@@ -1569,6 +1755,12 @@
             // Ajouter les mots personnalisés ajoutés par l'utilisateur courant dans sa session locale
             const localCustom = state.customWordsByCloud[dbThemeKey] || [];
             localCustom.forEach(w => {
+                if (counts[w] === undefined) counts[w] = 1;
+            });
+
+            // S'assurer aussi que tous les mots déjà sélectionnés par l'utilisateur courant sont présents dans le nuage
+            const currentlySelected = state.selectedVotesByCloud[dbThemeKey] || [];
+            currentlySelected.forEach(w => {
                 if (counts[w] === undefined) counts[w] = 1;
             });
 
@@ -1767,9 +1959,21 @@
 
         function openFreeTextStep() {
             const axeCfg = AXES_CONFIG[state.currentAxeKey];
+            const isAlreadyCompleted = state.completedThemes.includes(state.currentAxeKey);
+
             document.getElementById('text-axe-badge').textContent = axeCfg.shortTitle;
             document.getElementById('free-text-question').textContent = axeCfg.freeTextPrompt;
             document.getElementById('free_text_input').value = state.freeTextByAxe[state.currentAxeKey] || '';
+
+            const btnSave = document.getElementById('btn-save-axe');
+            if (btnSave) {
+                btnSave.innerHTML = `
+                    <span>${isAlreadyCompleted ? 'Mettre à jour cet axe' : 'Valider cet axe'}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                `;
+            }
 
             const recapEl = document.getElementById('recap-votes-axe');
             let allVotedWords = [];
@@ -1794,18 +1998,14 @@
             loadCloudStep(axeCfg.clouds.length - 1);
         }
 
-        // ENREGISTREMENT UNIQUE, ATOMIQUE ET RAPIDE DE L'AXE
+        // ENREGISTREMENT OU MISE À JOUR D'UN AXE (ZÉRO DOUBLON)
         async function saveAxeCompletion() {
             if (window._isSavingAxe) return;
             const axeKey = state.currentAxeKey;
             const axeCfg = AXES_CONFIG[axeKey];
             if (!axeCfg) return;
 
-            if (state.completedThemes.includes(axeKey)) {
-                goToStep('step-themes');
-                return;
-            }
-
+            const isUpdate = state.completedThemes.includes(axeKey);
             const freeText = document.getElementById('free_text_input').value.trim();
             state.freeTextByAxe[axeKey] = freeText;
 
@@ -1829,7 +2029,8 @@
             btn.disabled = true;
 
             try {
-                // 1. Insérer la ligne de réponse avec la trace exacte des votes
+                // 1. Insérer la nouvelle ligne de réponse : grâce à deduplicateLatestReponses(),
+                // seule cette dernière ligne en date est retenue pour cet élu sur cet axe !
                 const { error: repErr } = await supabaseClient.from(TABLE_REPONSES).insert([{
                     structure_name: state.structureName || 'Élu(e)',
                     commune: state.communeName || '',
@@ -1840,7 +2041,7 @@
                 }]);
                 if (repErr) throw repErr;
 
-                // 2. Incrémenter en parallèle la table idees pour l'export CSV des nuages (5x plus rapide sur mobile)
+                // 2. Mettre à jour la table idees en parallèle
                 const rpcPromises = [];
                 for (let i = 0; i < axeCfg.clouds.length; i++) {
                     const cloudId = axeCfg.clouds[i].id;
@@ -1858,11 +2059,16 @@
                     await Promise.allSettled(rpcPromises);
                 }
 
-                state.completedThemes.push(axeKey);
+                if (!state.completedThemes.includes(axeKey)) {
+                    state.completedThemes.push(axeKey);
+                }
                 saveStateToStorage();
-                showToast(`✅ ${axeCfg.shortTitle} validé et enregistré !`);
+                showToast(isUpdate
+                    ? `✅ Vos choix sur « ${axeCfg.shortTitle} » ont bien été mis à jour !`
+                    : `✅ ${axeCfg.shortTitle} validé et enregistré !`
+                );
 
-                if (state.completedThemes.length >= Object.keys(AXES_CONFIG).length) {
+                if (!isUpdate && state.completedThemes.length >= Object.keys(AXES_CONFIG).length) {
                     goToStep('step-merci');
                 } else {
                     goToStep('step-themes');
@@ -2171,8 +2377,9 @@
             refreshLiveResults();
         }
 
-        // Calcule l'état exact de tous les nuages à partir des réponses existantes
+        // Calcule l'état exact de tous les nuages à partir des réponses existantes (en ne retenant que la dernière validation par élu et par axe)
         function buildCloudMapFromReponses(reponses) {
+            const { activeRows } = deduplicateLatestReponses(reponses || []);
             const cloudMap = {};
             Object.keys(AXES_CONFIG).forEach(axeKey => {
                 const cfg = AXES_CONFIG[axeKey];
@@ -2180,7 +2387,7 @@
                     cloudMap[c.id] = {};
                     c.seedWords.forEach(w => { cloudMap[c.id][w] = 1; });
                     const col = idx === 0 ? 'votes_q1' : 'votes_q2';
-                    reponses.filter(r => r.theme === axeKey).forEach(r => {
+                    activeRows.filter(r => r.theme === axeKey).forEach(r => {
                         const raw = r[col] || '';
                         raw.split('|').map(s => normalizeWordLabel(s)).filter(Boolean).forEach(w => {
                             if (cloudMap[c.id][w] === undefined) cloudMap[c.id][w] = 1;
@@ -2201,7 +2408,8 @@
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
-                const reponses = reponsesData || [];
+                // Ne retenir que la dernière validation en date par élu et par axe
+                const { activeRows: reponses } = deduplicateLatestReponses(reponsesData || []);
                 const cloudMap = buildCloudMapFromReponses(reponses);
 
                 // Compter le total des votes exprimés par les élus
@@ -2211,7 +2419,7 @@
                     totalElusVotes += (r.votes_q2 ? r.votes_q2.split('|').filter(s => s.trim()).length : 0);
                 });
 
-                const uniqueElus = new Set(reponses.map(r => (r.structure_name || '').trim().toLowerCase()).filter(Boolean)).size;
+                const uniqueElus = new Set(reponses.map(r => normalizeParticipantKey(r.structure_name)).filter(Boolean)).size;
 
                 const axesToShow = state.liveActiveTab === 'all'
                     ? ['cap_ctg', 'axe1', 'axe2', 'axe3', 'axe4']
@@ -2361,7 +2569,7 @@
 
         // Resynchronise à 100 % la table `table_elus_commission_08102026_idees`
         // à partir des lignes présentes dans `table_elus_commission_08102026_reponses` !
-        // Ainsi, toute ligne de réponse supprimée retire immédiatement ses votes et supprime les mots orphelins.
+        // Supprime également en base les anciennes lignes remplacées lorsqu'un élu a modifié son axe.
         async function recalculateAllIdeesFromReponses(showNotification) {
             try {
                 const { data: reponses, error: repErr } = await supabaseClient
@@ -2370,7 +2578,18 @@
                     .order('created_at', { ascending: false });
                 if (repErr) throw repErr;
 
-                const expectedCloudMap = buildCloudMapFromReponses(reponses || []);
+                const { activeRows, supersededRows } = deduplicateLatestReponses(reponses || []);
+
+                // Nettoyage automatique en base des anciennes versions remplacées (session Admin authentifiée)
+                if (supersededRows.length > 0) {
+                    for (const oldRow of supersededRows) {
+                        if (oldRow.id !== undefined) {
+                            await supabaseClient.from(TABLE_REPONSES).delete().eq('id', oldRow.id);
+                        }
+                    }
+                }
+
+                const expectedCloudMap = buildCloudMapFromReponses(activeRows);
 
                 const { data: currentIdees, error: idErr } = await supabaseClient
                     .from(TABLE_IDEES)
@@ -2419,7 +2638,8 @@
                 supabaseClient.from(TABLE_REPONSES).select('*').order('created_at', { ascending: false }),
                 supabaseClient.from(TABLE_IDEES).select('*').order('theme', { ascending: true }).order('votes', { ascending: false })
             ]);
-            adminDataReponses = repRes.data || [];
+            const { activeRows } = deduplicateLatestReponses(repRes.data || []);
+            adminDataReponses = activeRows;
             adminDataIdees = ideesRes.data || [];
             document.getElementById('count-admin-rep').textContent = adminDataReponses.length;
             document.getElementById('count-admin-idees').textContent = adminDataIdees.length;
@@ -2497,8 +2717,15 @@
 
             try {
                 if (type === 'reponse') {
+                    const rec = adminDataReponses.find(r => String(r.id) === String(id));
                     const { error } = await supabaseClient.from(TABLE_REPONSES).delete().eq('id', id);
                     if (error) throw error;
+                    if (rec && rec.structure_name && rec.theme) {
+                        await supabaseClient.from(TABLE_REPONSES)
+                            .delete()
+                            .eq('structure_name', rec.structure_name)
+                            .eq('theme', rec.theme);
+                    }
                     // Recalculer immédiatement tous les nuages pour retirer les votes associés !
                     await recalculateAllIdeesFromReponses(false);
                     showToast("🗑️ Participation et votes associés supprimés !");
@@ -2516,7 +2743,8 @@
         async function editAdminRecord(type, id) {
             try {
                 if (type === 'reponse') {
-                    const rec = adminDataReponses.find(r => r.id === id);
+                    const rec = adminDataReponses.find(r => String(r.id) === String(id));
+                    if (!rec) return;
                     const newText = prompt("Modifier le texte libre :", rec.point_fort || '');
                     if (newText !== null) {
                         const { error } = await supabaseClient.from(TABLE_REPONSES).update({ point_fort: newText }).eq('id', id);
@@ -2524,7 +2752,8 @@
                         await loadAdminAll();
                     }
                 } else {
-                    const rec = adminDataIdees.find(i => i.id === id);
+                    const rec = adminDataIdees.find(i => String(i.id) === String(id));
+                    if (!rec) return;
                     const newMot = prompt("Modifier l'intitulé de l'idée :", rec.mot);
                     if (newMot === null) return;
                     const newVotes = prompt("Modifier le nombre de votes :", rec.votes);
