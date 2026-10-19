@@ -2270,6 +2270,7 @@
                     communesSet.add(r.commune.trim());
                 }
             });
+            const totalCommunes = communesSet.size;
 
             let totalVotes = 0;
             reponses.forEach(r => {
@@ -2500,22 +2501,28 @@
         }
 
         async function triggerPrintResultsReport() {
-            showToast("📄 Mise en page du rapport en cours pour l'impression / PDF...");
-            document.body.classList.remove('print-mode-paper');
-            document.body.classList.add('print-mode-results');
+            try {
+                showToast("📄 Mise en page du rapport en cours pour l'impression / PDF...");
+                document.body.classList.remove('print-mode-paper');
+                document.body.classList.add('print-mode-results');
 
-            await buildPrintableResultsReport();
+                await buildPrintableResultsReport();
 
-            // Lancer la boîte de dialogue d'impression native du navigateur
-            // L'utilisateur peut y choisir son imprimante physique OU "Enregistrer au format PDF"
-            window.print();
+                // Lancer la boîte de dialogue d'impression native du navigateur
+                // L'utilisateur peut y choisir son imprimante physique OU "Enregistrer au format PDF"
+                window.print();
 
-            const cleanup = () => {
+                const cleanup = () => {
+                    document.body.classList.remove('print-mode-results');
+                    window.removeEventListener('afterprint', cleanup);
+                };
+                window.addEventListener('afterprint', cleanup);
+                setTimeout(cleanup, 4000);
+            } catch (err) {
+                console.error("Erreur lors de l'impression des résultats :", err);
                 document.body.classList.remove('print-mode-results');
-                window.removeEventListener('afterprint', cleanup);
-            };
-            window.addEventListener('afterprint', cleanup);
-            setTimeout(cleanup, 4000);
+                alert("Erreur lors de la mise en page des résultats : " + (err && err.message ? err.message : err));
+            }
         }
 
         function initPaperExpressForm() {
